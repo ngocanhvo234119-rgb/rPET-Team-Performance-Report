@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPI Dashboard 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+  :root {
+    --bg:#0f1117; --surface:#181c27; --card:#1e2336; --border:#2a3050;
+    --accent:#4f8ef7; --green:#36d399; --yellow:#f7c948; --red:#fb6f84; --purple:#a78bfa;
+    --text:#e8ecf4; --muted:#7c8db5; --dim:#3a4568;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px;}
+  .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap;}
+  .header h1{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.5px;}
+  .header .sub{font-size:12px;color:var(--muted);margin-top:4px;}
+  .am-tabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .am-tab{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+  .am-tab:hover{border-color:var(--dim);color:var(--text);}
+  .am-tab.active{color:#fff;border-color:transparent;}
+  .am-tab.active.all{background:var(--accent);}
+  .am-tab.active.nghia{background:#4f8ef7;}
+  .am-tab.active.tuyen{background:#36d399;color:#0f1117;}
+  .am-tab.active.chau{background:#f7c948;color:#0f1117;}
+  .am-tab.active.nonfood{background:#a78bfa;}
+  .pl-tab{padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
+  .pl-tab:hover{border-color:var(--dim);color:var(--text);}
+  .pl-tab.active{background:var(--dim);border-color:var(--dim);color:#fff;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+  .kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
+  .kpi-card.c1::after{background:var(--accent);} .kpi-card.c2::after{background:var(--green);} .kpi-card.c3::after{background:var(--yellow);} .kpi-card.c4::after{background:var(--red);}
+  .kpi-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
+  .kpi-val{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:5px;}
+  .kpi-val.c1{color:var(--accent);} .kpi-val.c2{color:var(--green);} .kpi-val.c3{color:var(--yellow);} .kpi-val.c4{color:var(--red);}
+  .kpi-note{font-size:11px;color:var(--muted);}
+  .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:4px;}
+  .badge.up{background:rgba(54,211,153,.15);color:var(--green);}
+  .badge.dn{background:rgba(251,111,132,.15);color:var(--red);}
+  .badge.mid{background:rgba(247,201,72,.15);color:var(--yellow);}
+  .charts-row{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px;}
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+  .ct{font-size:13px;font-weight:600;margin-bottom:3px;}
+  .cs{font-size:11px;color:var(--muted);margin-bottom:14px;}
+  .legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
+  .li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+  .ld{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+  .tbl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  th{text-align:center;padding:7px 8px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  th:first-child,th:nth-child(2){text-align:left;}
+  td{text-align:center;padding:7px 8px;border-bottom:1px solid rgba(42,48,80,.4);white-space:nowrap;}
+  td:first-child,td:nth-child(2){text-align:left;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,.02);}
+  .chip{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:600;}
+  .chip.g{background:rgba(54,211,153,.12);color:var(--green);}
+  .chip.y{background:rgba(247,201,72,.12);color:var(--yellow);}
+  .chip.r{background:rgba(251,111,132,.12);color:var(--red);}
+  .chip.na{background:rgba(122,135,181,.1);color:var(--muted);}
+  .ttype{font-size:10px;padding:2px 6px;border-radius:5px;background:var(--surface);color:var(--muted);}
+  @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-row{grid-template-columns:1fr;}}
+  @media(max-width:600px){body{padding:12px;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>📊 KPI Sales Dashboard 2026</h1>
+    <div class="sub">Theo dõi thực hiện vs KPI · Cập nhật T06/2026</div>
+  </div>
+  <div class="am-tabs">
+    <button class="am-tab active all" onclick="setAM('all',this)"><span class="dot" style="background:#4f8ef7"></span> Tất cả</button>
+    <button class="am-tab nghia" onclick="setAM('Nghĩa',this)"><span class="dot" style="background:#4f8ef7"></span> Nghĩa</button>
+    <button class="am-tab tuyen" onclick="setAM('Tuyền',this)"><span class="dot" style="background:#36d399"></span> Tuyền</button>
+    <button class="am-tab chau" onclick="setAM('Châu',this)"><span class="dot" style="background:#f7c948"></span> Châu</button>
+    <button class="am-tab nonfood" onclick="setAM('Non-food',this)"><span class="dot" style="background:#a78bfa"></span> Non-food</button>
+  </div>
+  <div class="am-tabs" style="margin-top:8px">
+    <span style="font-size:11px;color:var(--muted);margin-right:4px;align-self:center">Dòng SP:</span>
+    <button class="pl-tab active" onclick="setPL('all',this)">Tất cả</button>
+    <button class="pl-tab" onclick="setPL('rPET',this)">rPET</button>
+    <button class="pl-tab" onclick="setPL('rHDPE',this)">rHDPE</button>
+    <button class="pl-tab" onclick="setPL('Non-food',this)">Non-food</button>
+  </div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-card c1"><div class="kpi-lbl">KPI Cả năm</div><div class="kpi-val c1" id="card-full-kpi">—</div><div class="kpi-note">tấn · kế hoạch 2026</div></div>
+  <div class="kpi-card c2"><div class="kpi-lbl">KPI Lũy kế</div><div class="kpi-val c2" id="card-cum-kpi">—</div><div class="kpi-note">tấn · kế hoạch lũy kế</div></div>
+  <div class="kpi-card c3"><div class="kpi-lbl">Thực hiện Lũy kế</div><div class="kpi-val c3" id="card-cum-act" style="font-size:34px">—</div><div class="kpi-note" id="card-ratio-note">—</div></div>
+  <div class="kpi-card c4"><div class="kpi-lbl">Dự báo tháng tới</div><div class="kpi-val c4" id="card-fc">—</div><div class="kpi-note" id="card-fc-note">—</div></div>
+</div>
+
+<div class="charts-row">
+  <div class="chart-card">
+    <div class="ct">KPI vs Thực hiện theo tháng</div>
+    <div class="cs">Đơn vị: tấn · T1–T12/2026</div>
+    <canvas id="mainChart" height="160"></canvas>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#fb6f84"></div>KPI tháng</div>
+      <div class="li"><div class="ld" style="background:#36d399"></div>Thực hiện</div>
+      <div class="li"><div class="ld" style="background:#a78bfa"></div>PO (đơn chốt)</div>
+      <div class="li"><div class="ld" style="background:#f7c948"></div>Dự báo (FC)</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="ct">Dự báo cuối năm vs KPI cả năm</div>
+    <div class="cs" id="forecast-cs">Actual + FC so với KPI năm (tấn)</div>
+    <canvas id="forecastChart" height="200"></canvas>
+  </div>
+</div>
+
+<div class="chart-card" style="margin-bottom:12px">
+  <div class="ct">Lũy kế KPI vs Thực hiện</div>
+  <div class="cs">Tích lũy từ đầu năm (tấn)</div>
+  <canvas id="cumulChart" height="90"></canvas>
+</div>
+
+<div class="tbl-card">
+  <div class="ct" style="margin-bottom:4px">Chi tiết từng tháng</div>
+  <div class="cs" style="margin-bottom:12px">KPI (xám) · Thực hiện (trắng) · % = TH/KPI · <span style="color:var(--purple)">tím = dùng PO tạm</span></div>
+  <table>
+    <thead>
+      <tr>
+        <th>AM</th><th>Nhóm SP</th>
+        <th>T01</th><th>T02</th><th>T03</th><th>T04</th><th>T05</th>
+        <th style="color:var(--green)">T06 ✓</th>
+        <th style="color:var(--yellow)">T07 →</th>
+        <th>KPI Lũy kế</th><th>TH Lũy kế</th><th>% Đạt</th>
+      </tr>
+    </thead>
+    <tbody id="tbl-body"></tbody>
+  </table>
+</div>
+
+<script>
+const RAW = {
+  "Nghĩa": {
+    "rPET": {
+      kpi:[364,787.5,914,963.5,678,862.8,766,1019,964,1129,894,832],
+      po:[null,null,null,null,null,null,209,88,0,0,0,0],
+      actual:[363,693,815,1172.6,751.3,536,null,null,null,null,null,null],
+      fc:[null,null,null,null,null,null,451,429,693,869,1243,1133],
+      cumKPI:[364,1151.5,2065.5,3029,3707,4569.8,5335.8,6354.8,7318.8,8447.8,9341.8,10173.8],
+      cumActual:[363,1056,1871,3043.6,3794.9,null,null,null,null,null,null,null]
+    },
+    "rHDPE": {
+      kpi:[296,296,296,296,296,296,296,296,296,296,296,296],
+      po:[null,null,null,null,null,null,173,0,0,0,0,0],
+      actual:[284,229,392,237.875,332.75,269.5,null,null,null,null,null,null],
+      fc:[null,null,null,null,null,null,null,null,null,null,null,null],
+      cumKPI:[296,592,888,1184,1480,1776,2072,2368,2664,2960,3256,3552],
+      cumActual:[284,513,905,1142.875,1475.625,null,null,null,null,null,null,null]
+    }
+  },
+  "Tuyền": {
+    "rPET": {
+      kpi:[870,966,980,1154.9,1152.9,1130.9,1132.9,1109.8,1109.8,1129.8,1145,1112],
+      po:[null,null,null,null,null,null,1049,66,33,0,0,0],
+      actual:[878,474,1201,1410.4,1782,941.4,null,null,null,null,null,null],
+      fc:[null,null,null,null,null,null,1651,1461,1407,1340,1361,1296],
+      cumKPI:[870,1836,2816,3970.9,5123.8,6254.7,7387.6,8497.4,9607.2,10737,11882,12994],
+      cumActual:[878,1352,2553,3963.4,5745.4,null,null,null,null,null,null,null]
+    }
+  },
+  "Châu": {
+    "rPET": {
+      kpi:[276,254,198,110,210,210,298,342,386,474,364,342],
+      po:[null,null,null,null,null,null,null,null,null,null,null,null],
+      actual:[0,0,0,176,null,null,null,null,null,null,null,null],
+      fc:[null,null,null,null,null,null,117,892,122,892,122,782],
+      cumKPI:[276,530,728,838,1048,1258,1556,1898,2284,2758,3122,3464],
+      cumActual:[0,0,0,176,null,null,null,null,null,null,null,null]
+    }
+  },
+  "Non-food": {
+    "Non-food": {
+      kpi:[751,821,899,550,580,591,581,570,601,580,581,601],
+      po:[null,null,null,null,null,null,null,null,null,null,null,null],
+      actual:[158,140,759,872.477,600.173,570.7,null,null,null,null,null,null],
+      fc:[null,null,null,null,null,null,128,562,452,892,122,782],
+      cumKPI:[751,1572,2471,3021,3601,4192,4773,5343,5944,6524,7105,7706],
+      cumActual:[158,298,1057,1929.477,2529.65,null,null,null,null,null,null,null]
+    }
+  }
+};
+
+const AM_COLORS = {"Nghĩa":"#4f8ef7","Tuyền":"#36d399","Châu":"#f7c948","Non-food":"#a78bfa"};
+const MONTHS = ['T01','T02','T03','T04','T05','T06','T07','T08','T09','T10','T11','T12'];
+let currentAM='all', currentPL='all', mainChart, cumulChart;
+
+function fmt(v,dec=1){if(v==null||isNaN(v))return'—';return v.toLocaleString('vi-VN',{maximumFractionDigits:dec});}
+function fmtK(v){if(v==null||isNaN(v))return'—';if(v>=1000)return(v/1000).toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})+'K';return v.toLocaleString('vi-VN',{maximumFractionDigits:1});}
+function ratioChip(r){if(r==null)return'<span class="chip na">—</span>';const pct=(r*100).toFixed(0)+'%';if(r>=1)return`<span class="chip g">${pct}</span>`;if(r>=0.7)return`<span class="chip y">${pct}</span>`;return`<span class="chip r">${pct}</span>`;}
+function amEntries(am,pl){pl=pl||currentPL;let entries;if(am==='all'){entries=Object.entries(RAW).flatMap(([a,pls])=>Object.entries(pls).map(([p,d])=>({am:a,pl:p,d})));}else{entries=Object.entries(RAW[am]).map(([p,d])=>({am,pl:p,d}));}if(pl!=='all')entries=entries.filter(e=>e.pl===pl);return entries;}
+
+function aggregate(am) {
+  const entries=amEntries(am);
+  const kpi=Array(12).fill(0),actual=Array(12).fill(null),po=Array(12).fill(null),fc=Array(12).fill(null);
+  const cumKPI=Array(12).fill(0),cumAct=Array(12).fill(null);
+  entries.forEach(({d})=>{
+    d.kpi.forEach((v,i)=>{if(v!=null)kpi[i]+=v;});
+    d.actual.forEach((v,i)=>{if(v!=null)actual[i]=(actual[i]||0)+v;});
+    if(d.po)d.po.forEach((v,i)=>{if(v!=null&&v>0)po[i]=(po[i]||0)+v;});
+    d.fc.forEach((v,i)=>{if(v!=null)fc[i]=(fc[i]||0)+v;});
+    d.cumKPI.forEach((v,i)=>{if(v!=null)cumKPI[i]+=v;});
+  });
+  let running=0;
+  for(let i=0;i<12;i++){
+    if(actual[i]!=null){running+=actual[i];cumAct[i]=+running.toFixed(3);}
+  }
+  return {kpi,actual,po,fc,cumKPI,cumAct};
+}
+
+function updateCards(am) {
+  const agg=aggregate(am);
+  const fullKPI=agg.kpi.reduce((s,v)=>s+(v||0),0);
+  let lastActualIdx=-1;
+  for(let i=0;i<12;i++)if(agg.cumAct[i]!=null)lastActualIdx=i;
+  const lastMonthLabel=lastActualIdx>=0?MONTHS[lastActualIdx]:'—';
+  const cumKPILatest=lastActualIdx>=0?agg.cumKPI[lastActualIdx]:0;
+  const cumActLatest=lastActualIdx>=0?agg.cumAct[lastActualIdx]:0;
+  const ratio=cumKPILatest>0?cumActLatest/cumKPILatest:null;
+  const fcNextIdx=lastActualIdx+1;
+  const fcNext=fcNextIdx<12?agg.fc[fcNextIdx]:null;
+  const kpiNext=fcNextIdx<12?agg.kpi[fcNextIdx]:null;
+  const fcRatio=(fcNext!=null&&kpiNext>0)?fcNext/kpiNext:null;
+  const fcLabel=fcNextIdx<12?MONTHS[fcNextIdx]:'—';
+  document.getElementById('card-full-kpi').textContent=fmtK(fullKPI);
+  document.getElementById('card-cum-kpi').textContent=fmtK(cumKPILatest);
+  document.getElementById('card-cum-act').textContent=fmtK(cumActLatest);
+  document.getElementById('card-fc').textContent=fcNext!=null?fmtK(fcNext):'—';
+  const badgeClass=ratio==null?'mid':ratio>=1?'up':ratio>=0.7?'mid':'dn';
+  const ratioTxt=ratio!=null?(ratio*100).toFixed(1)+'% KPI':'—';
+  document.getElementById('card-ratio-note').innerHTML=`Đạt <span class="badge ${badgeClass}">${ratioTxt}</span> KPI lũy kế`;
+  const fcBadge=fcRatio!=null?`<span class="badge mid">${(fcRatio*100).toFixed(0)}% KPI ${fcLabel}</span>`:'';
+  document.getElementById('card-fc-note').innerHTML=`tấn dự báo ${fcLabel} ${fcBadge}`;
+  document.getElementById('card-cum-kpi').closest('.kpi-card').querySelector('.kpi-lbl').textContent=`KPI Lũy kế T1–${lastMonthLabel}`;
+  document.getElementById('card-cum-act').closest('.kpi-card').querySelector('.kpi-lbl').textContent=`Thực hiện Lũy kế T1–${lastMonthLabel}`;
+  document.getElementById('card-fc').closest('.kpi-card').querySelector('.kpi-lbl').textContent=`Dự báo ${fcLabel} (FC)`;
+}
+
+function buildMainChart(am) {
+  const agg=aggregate(am);
+  const ctx=document.getElementById('mainChart').getContext('2d');
+  if(mainChart)mainChart.destroy();
+  mainChart=new Chart(ctx,{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'KPI',data:agg.kpi,backgroundColor:'rgba(251,111,132,.18)',borderColor:'#fb6f84',borderWidth:2,borderRadius:4,order:1},
+    {label:'Thực hiện',data:agg.actual,backgroundColor:'rgba(54,211,153,.25)',borderColor:'#36d399',borderWidth:2,borderRadius:4,order:2},
+    {label:'PO (đơn chốt)',data:agg.po,backgroundColor:'rgba(167,139,250,.25)',borderColor:'#a78bfa',borderWidth:2,borderRadius:4,order:3},
+    {label:'Dự báo',data:agg.fc,type:'line',borderColor:'#f7c948',backgroundColor:'rgba(247,201,72,.07)',borderWidth:2,borderDash:[4,3],pointRadius:3,tension:0.3,order:0}
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,titleColor:'#e8ecf4',bodyColor:'#7c8db5',callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw):'—'} tấn`}}},scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+}
+
+function buildCumulChart(am) {
+  const agg=aggregate(am);
+  const cumFC=Array(12).fill(null);
+  let lastActIdx=-1;
+  for(let i=0;i<12;i++)if(agg.cumAct[i]!=null)lastActIdx=i;
+  if(lastActIdx>=0){
+    let running=agg.cumAct[lastActIdx];
+    cumFC[lastActIdx]=running;
+    for(let i=lastActIdx+1;i<12;i++){if(agg.fc[i]!=null){running+=agg.fc[i];cumFC[i]=+running.toFixed(1);}}
+  }
+  const ctx=document.getElementById('cumulChart').getContext('2d');
+  if(cumulChart)cumulChart.destroy();
+  cumulChart=new Chart(ctx,{type:'line',data:{labels:MONTHS,datasets:[
+    {label:'Lũy kế KPI',data:agg.cumKPI,borderColor:'#fb6f84',backgroundColor:'rgba(251,111,132,.07)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#fb6f84',borderWidth:2},
+    {label:'Lũy kế TH',data:agg.cumAct,borderColor:'#36d399',backgroundColor:'rgba(54,211,153,.1)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#36d399',borderWidth:2},
+    {label:'Lũy kế FC',data:cumFC,borderColor:'#f7c948',backgroundColor:'transparent',fill:false,tension:0.4,pointRadius:3,pointBackgroundColor:'#f7c948',borderWidth:2,borderDash:[5,4]}
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw,0):'—'} tấn`}}},scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+}
+
+function buildMonthCell(d,idx,highlight='') {
+  const k=d.kpi[idx];
+  const ac=d.actual[idx];
+  const po=d.po?d.po[idx]:null;
+  const useVal=ac!=null?ac:(po!=null&&po>0?po:null);
+  const isPO=ac==null&&useVal!=null;
+  const r=(k>0&&useVal!=null)?useVal/k:null;
+  const remain=isPO&&k!=null&&useVal!=null?k-useVal:null;
+  return `<td style="${highlight}">
+    <div style="color:var(--muted);font-size:10px">${fmt(k,0)}</div>
+    <div style="font-weight:600;color:${isPO?'var(--purple)':'inherit'}">${useVal!=null?fmt(useVal,1):'—'}${isPO?' <span style="font-size:9px">(PO)</span>':''}</div>
+    ${r!=null?ratioChip(r):''}
+    ${remain!=null?`<div style="font-size:9px;color:${remain<=0?'var(--green)':'var(--red)'};margin-top:2px">${remain<=0?'Vượt: +'+fmt(Math.abs(remain),1):'Còn thiếu: '+fmt(remain,1)}</div>`:''}
+  </td>`;
+}
+
+function buildTable(am) {
+  const tbody=document.getElementById('tbl-body');
+  tbody.innerHTML='';
+  const entries=amEntries(am);
+  entries.forEach(({am:a,pl,d})=>{
+    const color=AM_COLORS[a];
+    let cells='';
+    for(let i=0;i<5;i++){
+      const k=d.kpi[i],ac=d.actual[i],po=d.po?d.po[i]:null;
+      const useVal=ac!=null?ac:(po!=null&&po>0?po:null);
+      const isPO=ac==null&&useVal!=null;
+      const r=(k>0&&useVal!=null)?useVal/k:null;
+      cells+=`<td>
+        <div style="color:var(--muted);font-size:10px">${fmt(k,0)}</div>
+        <div style="font-weight:600;color:${isPO?'var(--purple)':'inherit'}">${useVal!=null?fmt(useVal,1):'—'}${isPO?' <span style="font-size:9px">(PO)</span>':''}</div>
+        ${r!=null?ratioChip(r):''}
+      </td>`;
+    }
+    cells+=buildMonthCell(d,5,'background:rgba(54,211,153,.05)');
+    cells+=buildMonthCell(d,6,'background:rgba(247,201,72,.05)');
+    let cumActLatest=0,lastActIdx=-1;
+    for(let i=0;i<12;i++)if(d.actual[i]!=null){cumActLatest+=d.actual[i];lastActIdx=i;}
+    const cumKPILatest=lastActIdx>=0?d.cumKPI[lastActIdx]:d.cumKPI[4];
+    const cumRatio=cumKPILatest>0&&lastActIdx>=0?cumActLatest/cumKPILatest:null;
+    tbody.innerHTML+=`<tr>
+      <td style="color:${color};font-weight:600">${a}</td>
+      <td><span class="ttype">${pl}</span></td>
+      ${cells}
+      <td style="color:var(--muted)">${fmt(cumKPILatest,0)}</td>
+      <td style="font-weight:600">${fmt(cumActLatest,1)}</td>
+      <td>${ratioChip(cumRatio)}</td>
+    </tr>`;
+  });
+}
+
+function buildForecastChart(am) {
+  const ctx=document.getElementById('forecastChart').getContext('2d');
+  if(window._forecastChart)window._forecastChart.destroy();
+  const ams=am==='all'?Object.keys(RAW):[am];
+  const kpiData=[],forecastData=[],labels=[];
+  ams.forEach(a=>{
+    let fullKPI=0,forecast=0;
+    Object.values(RAW[a]).forEach(d=>{
+      fullKPI+=d.cumKPI[11]||0;
+      let lastActual=0,lastActualIdx=-1,running=0;
+      for(let i=0;i<12;i++){if(d.actual[i]!=null){running+=d.actual[i];lastActual=running;lastActualIdx=i;}}
+      let fc=lastActualIdx>=0?lastActual:0;
+      for(let i=lastActualIdx+1;i<12;i++)if(d.fc[i]!=null)fc+=d.fc[i];
+      forecast+=fc;
+    });
+    labels.push(a);
+    kpiData.push(+fullKPI.toFixed(1));
+    forecastData.push(+forecast.toFixed(1));
+  });
+  const agg=aggregate(am);
+  let lastIdx=-1;
+  for(let i=0;i<12;i++)if(agg.cumAct[i]!=null)lastIdx=i;
+  const nextIdx=lastIdx+1;
+  if(lastIdx>=0&&nextIdx<12){
+    document.getElementById('forecast-cs').textContent=`Actual T1–${MONTHS[lastIdx]} + FC ${MONTHS[nextIdx]}–T12 so với KPI năm (tấn)`;
+  }
+  window._forecastChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'KPI cả năm',data:kpiData,backgroundColor:'rgba(251,111,132,.2)',borderColor:'#fb6f84',borderWidth:2,borderRadius:5},
+    {label:'Dự báo cuối năm',data:forecastData,backgroundColor:'rgba(247,201,72,.2)',borderColor:'#f7c948',borderWidth:2,borderRadius:5}
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw,0)} tấn`}}},scales:{x:{ticks:{color:'#e8ecf4',font:{size:12,weight:'600'}},grid:{display:false}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+}
+
+function setAM(am,el){currentAM=am;document.querySelectorAll('.am-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
+function setPL(pl,el){currentPL=pl;document.querySelectorAll('.pl-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
+function renderAll(){updateCards(currentAM);buildMainChart(currentAM);buildCumulChart(currentAM);buildTable(currentAM);buildForecastChart(currentAM);}
+
+const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
+  const ctx=chart.ctx;
+  const isCumulChart=chart.canvas.id==='cumulChart';
+  const isMainChart=chart.canvas.id==='mainChart';
+  const isForecastChart=chart.canvas.id==='forecastChart';
+
+  if(isMainChart){
+    // Vẽ số trên tất cả dataset
+    chart.data.datasets.forEach((dataset,i)=>{
+      const meta=chart.getDatasetMeta(i);
+      const isLine=dataset.type==='line';
+      meta.data.forEach((el,idx)=>{
+        const v=dataset.data[idx];
+        if(v==null||v===0)return;
+        const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
+        ctx.save();
+        ctx.font=isLine?'9px Inter':'bold 9px Inter';
+        ctx.fillStyle=dataset.borderColor||'#b0bcd4';
+        ctx.textAlign='center';
+        ctx.textBaseline='bottom';
+        ctx.fillText(label,el.x,el.y-(isLine?6:4));
+        ctx.restore();
+      });
+    });
+    // Vẽ % phía trên cột cao nhất (KPI vs Thực hiện)
+    const kpiDataset=chart.data.datasets.find(d=>d.label==='KPI');
+    const actDataset=chart.data.datasets.find(d=>d.label==='Thực hiện');
+    if(kpiDataset&&actDataset){
+      const kpiMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(kpiDataset));
+      const actMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(actDataset));
+      kpiMeta.data.forEach((el,idx)=>{
+        const kv=kpiDataset.data[idx];
+        const av=actDataset.data[idx];
+        if(kv==null||av==null||kv===0)return;
+        const pct=Math.round(av/kv*100)+'%';
+        const topEl=el.y<actMeta.data[idx].y?el:actMeta.data[idx];
+        ctx.save();
+        ctx.font='bold 10px Inter';
+        ctx.fillStyle=av>=kv?'#36d399':'#fb6f84';
+        ctx.textAlign='center';
+        ctx.textBaseline='bottom';
+        ctx.fillText(pct,topEl.x,topEl.y-16);
+        ctx.restore();
+      });
+    }
+    return;
+  }
+
+  if(isForecastChart){
+    // Vẽ số trên tất cả cột
+    chart.data.datasets.forEach((dataset,i)=>{
+      const meta=chart.getDatasetMeta(i);
+      meta.data.forEach((el,idx)=>{
+        const v=dataset.data[idx];
+        if(v==null||v===0)return;
+        const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
+        ctx.save();
+        ctx.font='bold 9px Inter';
+        ctx.fillStyle=dataset.borderColor||'#b0bcd4';
+        ctx.textAlign='center';
+        ctx.textBaseline='bottom';
+        ctx.fillText(label,el.x,el.y-4);
+        ctx.restore();
+      });
+    });
+    // Vẽ % Dự báo/KPI phía trên cột cao nhất
+    const kpiD=chart.data.datasets.find(d=>d.label==='KPI cả năm');
+    const fcD=chart.data.datasets.find(d=>d.label==='Dự báo cuối năm');
+    if(kpiD&&fcD){
+      const kpiM=chart.getDatasetMeta(chart.data.datasets.indexOf(kpiD));
+      const fcM=chart.getDatasetMeta(chart.data.datasets.indexOf(fcD));
+      kpiM.data.forEach((el,idx)=>{
+        const kv=kpiD.data[idx];
+        const fv=fcD.data[idx];
+        if(kv==null||fv==null||kv===0)return;
+        const pct=Math.round(fv/kv*100)+'%';
+        const topEl=el.y<fcM.data[idx].y?el:fcM.data[idx];
+        ctx.save();
+        ctx.font='bold 10px Inter';
+        ctx.fillStyle=fv>=kv?'#36d399':'#fb6f84';
+        ctx.textAlign='center';
+        ctx.textBaseline='bottom';
+        ctx.fillText(pct,topEl.x,topEl.y-16);
+        ctx.restore();
+      });
+    }
+    return;
+  }
+
+  if(isCumulChart){
+    // Vẽ số trên tất cả đường
+    chart.data.datasets.forEach((dataset,i)=>{
+      const meta=chart.getDatasetMeta(i);
+      meta.data.forEach((el,idx)=>{
+        const v=dataset.data[idx];
+        if(v==null||v===0)return;
+        const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
+        ctx.save();
+        ctx.font='9px Inter';
+        ctx.fillStyle=dataset.borderColor||'#b0bcd4';
+        ctx.textAlign='center';
+        ctx.textBaseline='bottom';
+        ctx.fillText(label,el.x,el.y-6);
+        ctx.restore();
+      });
+    });
+    // Vẽ % Lũy kế TH/KPI
+    const thDataset=chart.data.datasets.find(d=>d.label==='Lũy kế TH');
+    const kpiDataset=chart.data.datasets.find(d=>d.label==='Lũy kế KPI');
+    if(!thDataset||!kpiDataset)return;
+    const thMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(thDataset));
+    thMeta.data.forEach((el,idx)=>{
+      const tv=thDataset.data[idx];
+      const kv=kpiDataset.data[idx];
+      if(tv==null||kv==null||kv===0)return;
+      const pct=Math.round(tv/kv*100)+'%';
+      ctx.save();
+      ctx.font='bold 9px Inter';
+      ctx.fillStyle=tv>=kv?'#36d399':'#fb6f84';
+      ctx.textAlign='center';
+      ctx.textBaseline='bottom';
+      ctx.fillText(pct,el.x,el.y-18);
+      ctx.restore();
+    });
+  }
+}};
+
+Chart.register(datalabelsPlugin);
+renderAll();
+</script>
+</body>
+</html>
