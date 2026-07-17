@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
+<html lang="vi"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KPI Dashboard 2026</title>
@@ -118,7 +116,7 @@
       📂 Upload file KPI Excel
       <input type="file" id="excelUpload" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
     </label>
-    <div class="upload-status" id="uploadStatus">Chưa upload file</div>
+    <div class="upload-status ok" id="uploadStatus">✅ Đã load 110 khách hàng · 4 AM · dashboard đã cập nhật</div>
     <button class="upload-btn" onclick="downloadHTML()" style="margin-top:6px;border-color:var(--accent);color:var(--accent)">
       💾 Tải file HTML mới
     </button>
@@ -126,10 +124,10 @@
 </div>
 
 <div class="kpi-grid">
-  <div class="kpi-card c1"><div class="kpi-lbl">KPI Cả năm</div><div class="kpi-val c1" id="card-full-kpi">—</div><div class="kpi-note">tấn · kế hoạch 2026</div></div>
-  <div class="kpi-card c2"><div class="kpi-lbl">KPI Lũy kế</div><div class="kpi-val c2" id="card-cum-kpi">—</div><div class="kpi-note">tấn · kế hoạch lũy kế</div></div>
-  <div class="kpi-card c3"><div class="kpi-lbl">Thực hiện Lũy kế</div><div class="kpi-val c3" id="card-cum-act" style="font-size:34px">—</div><div class="kpi-note" id="card-ratio-note">—</div></div>
-  <div class="kpi-card c4"><div class="kpi-lbl">Dự báo tháng tới</div><div class="kpi-val c4" id="card-fc">—</div><div class="kpi-note" id="card-fc-note">—</div></div>
+  <div class="kpi-card c1"><div class="kpi-lbl">KPI Cả năm</div><div class="kpi-val c1" id="card-full-kpi">36,8K</div><div class="kpi-note">tấn · kế hoạch 2026</div></div>
+  <div class="kpi-card c2"><div class="kpi-lbl">KPI Lũy kế T1–T06</div><div class="kpi-val c2" id="card-cum-kpi">16,8K</div><div class="kpi-note">tấn · kế hoạch lũy kế</div></div>
+  <div class="kpi-card c3"><div class="kpi-lbl">Thực hiện Lũy kế T1–T06</div><div class="kpi-val c3" id="card-cum-act" style="font-size:34px">15,9K</div><div class="kpi-note" id="card-ratio-note">Đạt <span class="badge mid">94.5% KPI</span> KPI lũy kế</div></div>
+  <div class="kpi-card c4"><div class="kpi-lbl">Dự báo T07 (FC)</div><div class="kpi-val c4" id="card-fc">2,8K</div><div class="kpi-note" id="card-fc-note">tấn dự báo T07 <span class="badge mid">90% KPI T07</span></div></div>
 </div>
 
 
@@ -139,7 +137,7 @@
   <div class="chart-card">
     <div class="ct">KPI vs Thực hiện theo tháng</div>
     <div class="cs">Đơn vị: tấn · T1–T12/2026</div>
-    <canvas id="mainChart" height="160"></canvas>
+    <canvas id="mainChart" height="605" style="box-sizing: border-box; display: block; height: 403px; width: 756px;" width="1134"></canvas>
     <div class="legend">
       <div class="li"><div class="ld" style="background:#fb6f84"></div>KPI tháng</div>
       <div class="li"><div class="ld" style="background:#36d399"></div>Thực hiện</div>
@@ -149,15 +147,15 @@
   </div>
   <div class="chart-card">
     <div class="ct">Dự báo cuối năm vs KPI cả năm</div>
-    <div class="cs" id="forecast-cs">Actual + FC so với KPI năm (tấn)</div>
-    <canvas id="forecastChart" height="200"></canvas>
+    <div class="cs" id="forecast-cs">Actual T1–T06 + FC T07–T12 so với KPI năm (tấn)</div>
+    <canvas id="forecastChart" height="357" style="box-sizing: border-box; display: block; height: 238px; width: 357px;" width="536"></canvas>
   </div>
 </div>
 
 <div class="chart-card" style="margin-bottom:12px">
   <div class="ct">Lũy kế KPI vs Thực hiện</div>
   <div class="cs">Tích lũy từ đầu năm (tấn)</div>
-  <canvas id="cumulChart" height="90"></canvas>
+  <canvas id="cumulChart" height="525" style="box-sizing: border-box; display: block; height: 350px; width: 1167px;" width="1750"></canvas>
 </div>
 
 <div class="tbl-card">
@@ -173,7 +171,313 @@
         <th>KPI Lũy kế</th><th>TH Lũy kế</th><th>% Đạt</th>
       </tr>
     </thead>
-    <tbody id="tbl-body"></tbody>
+    <tbody id="tbl-body"><tr>
+      <td style="color:#4f8ef7;font-weight:600">Nghĩa</td>
+      <td><span class="ttype">rPET</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">364</div>
+        <div style="font-weight:600;color:inherit">363</div>
+        <span class="chip y">100%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">788</div>
+        <div style="font-weight:600;color:inherit">693</div>
+        <span class="chip y">88%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">914</div>
+        <div style="font-weight:600;color:inherit">815</div>
+        <span class="chip y">89%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">964</div>
+        <div style="font-weight:600;color:inherit">1.172,6</div>
+        <span class="chip g">122%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">678</div>
+        <div style="font-weight:600;color:inherit">751,3</div>
+        <span class="chip g">111%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">863</div>
+    <div style="font-weight:600;color:inherit">535,7</div>
+    <span class="chip r">62%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">436</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 436</div>
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rPET" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">678</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 678</div>
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rPET" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">634</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 634</div>
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rPET" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">4.570</td>
+      <td style="font-weight:600">4.330,6</td>
+      <td><span class="chip y">95%</span></td>
+    </tr><tr>
+      <td style="color:#4f8ef7;font-weight:600">Nghĩa</td>
+      <td><span class="ttype">rHDPE</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">284</div>
+        <span class="chip y">96%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">229</div>
+        <span class="chip y">77%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">392</div>
+        <span class="chip g">132%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">237,9</div>
+        <span class="chip y">80%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">332,8</div>
+        <span class="chip g">112%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:inherit">269,5</div>
+    <span class="chip y">91%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    
+    
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rHDPE" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    
+    
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rHDPE" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    
+    
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rHDPE" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">1.776</td>
+      <td style="font-weight:600">1.745,1</td>
+      <td><span class="chip y">98%</span></td>
+    </tr><tr>
+      <td style="color:#36d399;font-weight:600">Tuyền</td>
+      <td><span class="ttype">rPET</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">870</div>
+        <div style="font-weight:600;color:inherit">878</div>
+        <span class="chip g">101%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">966</div>
+        <div style="font-weight:600;color:inherit">474</div>
+        <span class="chip r">49%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">980</div>
+        <div style="font-weight:600;color:inherit">1.201</div>
+        <span class="chip g">123%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">1.155</div>
+        <div style="font-weight:600;color:inherit">1.410,4</div>
+        <span class="chip g">122%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">1.153</div>
+        <div style="font-weight:600;color:inherit">1.782</div>
+        <span class="chip g">155%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">1.131</div>
+    <div style="font-weight:600;color:inherit">941,4</div>
+    <span class="chip y">83%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">1.133</div>
+    <div style="font-weight:600;color:var(--purple)">1.005,4 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip y">89%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 127,5</div>
+    <span class="drill-btn" data-am="Tuyền" data-pl="rPET" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">1.110</div>
+    <div style="font-weight:600;color:var(--purple)">44 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">4%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 1.065,8</div>
+    <span class="drill-btn" data-am="Tuyền" data-pl="rPET" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">1.110</div>
+    <div style="font-weight:600;color:var(--purple)">33 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">3%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 1.076,8</div>
+    <span class="drill-btn" data-am="Tuyền" data-pl="rPET" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">6.255</td>
+      <td style="font-weight:600">6.686,8</td>
+      <td><span class="chip g">107%</span></td>
+    </tr><tr>
+      <td style="color:#f7c948;font-weight:600">Châu</td>
+      <td><span class="ttype">rPET</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:inherit">0</div>
+    
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">650</div>
+    <div style="font-weight:600;color:var(--purple)">231 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">36%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 419</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rPET" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">705</div>
+    <div style="font-weight:600;color:var(--purple)">66 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">9%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 639</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rPET" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">738</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 738</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rPET" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">—</td>
+      <td style="font-weight:600">0</td>
+      <td><span class="chip na">—</span></td>
+    </tr><tr>
+      <td style="color:#f7c948;font-weight:600">Châu</td>
+      <td><span class="ttype">rHDPE</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:inherit">0</div>
+    
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:var(--purple)">184,3 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">62%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 111,8</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rHDPE" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 296</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rHDPE" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 296</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rHDPE" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">—</td>
+      <td style="font-weight:600">0</td>
+      <td><span class="chip na">—</span></td>
+    </tr><tr>
+      <td style="color:#a78bfa;font-weight:600">Non-food</td>
+      <td><span class="ttype">Non-food</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">751</div>
+        <div style="font-weight:600;color:inherit">158</div>
+        <span class="chip r">21%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">821</div>
+        <div style="font-weight:600;color:inherit">140</div>
+        <span class="chip r">17%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">899</div>
+        <div style="font-weight:600;color:inherit">759</div>
+        <span class="chip y">84%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">550</div>
+        <div style="font-weight:600;color:inherit">872,5</div>
+        <span class="chip g">159%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">580</div>
+        <div style="font-weight:600;color:inherit">600,2</div>
+        <span class="chip g">103%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">591</div>
+    <div style="font-weight:600;color:inherit">570,7</div>
+    <span class="chip y">97%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">581</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 581</div>
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">570</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 570</div>
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">601</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 601</div>
+    
+  </td>
+      <td style="color:var(--muted)">4.192</td>
+      <td style="font-weight:600">3.100,4</td>
+      <td><span class="chip y">74%</span></td>
+    </tr></tbody>
   </table>
 </div>
 
@@ -272,63 +576,529 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrill();});
 const RAW = {
   "Nghĩa": {
     "rPET": {
-      kpi:[364,787.5,914,963.5,678,862.8,436,678,634,788,568,546],
-      po:[null,null,null,null,null,null,0,0,0,0,0,0],
-      actual:[363,693,815,1172.6,751.3,536,null,null,null,null,null,null],
-      fc:[null,null,null,null,null,null,264,110,374,528,902,792],
-      cumKPI:[364,1151.5,2065.5,3029,3707,4570,5006,5684,6318,7106,7674,8220],
-      cumActual:[363,1056,1871,3043.6,3794.9,null,null,null,null,null,null,null]
+      "kpi": [
+        364,
+        787.5,
+        914,
+        963.5,
+        678,
+        862.8,
+        436,
+        678,
+        634,
+        788,
+        568,
+        546
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        363,
+        693,
+        815,
+        1172.6,
+        751.3,
+        535.7,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        264,
+        110,
+        374,
+        528,
+        902,
+        792
+      ],
+      "cumKPI": [
+        364,
+        1151.5,
+        2065.5,
+        3029,
+        3707,
+        4569.8,
+        5005.8,
+        5683.8,
+        6317.8,
+        7105.8,
+        7673.8,
+        8219.8
+      ],
+      "cumActual": [
+        363,
+        1056,
+        1871,
+        3043.6,
+        3794.9,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
     },
     "rHDPE": {
-      kpi:[296,296,296,296,296,296,null,null,null,null,null,null],
-      po:[null,null,null,null,null,null,null,null,null,null,null,null],
-      actual:[284,229,392,237.875,332.75,269.5,null,null,null,null,null,null],
-      fc:[null,null,null,null,null,null,null,null,null,null,null,null],
-      cumKPI:[296,592,888,1184,1480,1776,2072,2368,2664,2960,3256,3552],
-      cumActual:[284,513,905,1142.875,1475.625,null,null,null,null,null,null,null]
+      "kpi": [
+        296,
+        296,
+        296,
+        296,
+        296,
+        296,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        284,
+        229,
+        392,
+        237.875,
+        332.75,
+        269.5,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cumKPI": [
+        296,
+        592,
+        888,
+        1184,
+        1480,
+        1776,
+        1776,
+        1776,
+        1776,
+        1776,
+        1776,
+        1776
+      ],
+      "cumActual": [
+        284,
+        513,
+        905,
+        1142.875,
+        1475.625,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
     }
   },
   "Tuyền": {
     "rPET": {
-      kpi:[870,966,980,1154.9,1152.9,1130.9,1132.9,1109.8,1109.8,1129.8,1145,1112],
-      po:[null,null,null,null,null,null,939,66,33,0,0,0],
-      actual:[878,474,1201,1410.4,1782,941.4,null,null,null,null,null,null],
-      fc:[null,null,null,null,null,null,1871,1461,1407,1340,1361,1296],
-      cumKPI:[870,1836,2816,3970.9,5123.8,6254.7,7387.6,8497.4,9607.2,10737,11882,12994],
-      cumActual:[878,1352,2553,3963.4,5745.4,null,null,null,null,null,null,null]
+      "kpi": [
+        870,
+        966,
+        980,
+        1154.9,
+        1152.9,
+        1130.9,
+        1132.9,
+        1109.8,
+        1109.8,
+        1129.8,
+        1145,
+        1112
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1005.4,
+        44,
+        33,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        878,
+        474,
+        1201,
+        1410.4,
+        1782,
+        941.424,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1871,
+        1460.65,
+        1406.898,
+        1339.9,
+        1360.7,
+        1295.5
+      ],
+      "cumKPI": [
+        870,
+        1836,
+        2816,
+        3970.9,
+        5123.8,
+        6254.7,
+        7387.6,
+        8497.4,
+        9607.2,
+        10737,
+        11882,
+        12994
+      ],
+      "cumActual": [
+        878,
+        1352,
+        2553,
+        3963.4,
+        5745.4,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
     }
   },
   "Châu": {
     "rPET": {
-      kpi:[null,null,null,null,null,null,650,705,738,859,712,650],
-      po:[null,null,null,null,null,null,209,88,null,null,null,null],
-      actual:[0,0,0,0,0,0,null,null,null,null,null,null],
-      fc:[null,null,null,null,null,null,319,319,319,407,407,407],
-      cumKPI:[276,530,728,838,1048,1258,1556,1898,2284,2758,3122,3464],
-      cumActual:[null,null,null,null,null,null,650,1355,2093,2952,3664,4314]
+      "kpi": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        650,
+        705,
+        738,
+        859,
+        712,
+        650
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        231,
+        66,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        319,
+        319,
+        319,
+        407,
+        407,
+        407
+      ],
+      "cumKPI": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        650,
+        1355,
+        2093,
+        2952,
+        3664,
+        4314
+      ],
+      "cumActual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        650,
+        1355,
+        2093,
+        2952,
+        3664,
+        4314
+      ]
     },
     "rHDPE": {
-      kpi:[null,null,null,null,null,null,296,296,296,296,296,296],
-      po:[null,null,null,null,null,null,173,null,null,null,null,null],
-      actual:[0,0,0,0,0,0,null,null,null,null,null,null],
-      fc:[null,null,null,null,null,null,208,158,160,212,187,170],
-      cumKPI:[276,530,728,838,1048,1258,1556,1898,2284,2758,3122,3464],
-      cumActual:[null,null,null,null,null,null,296,592,888,1184,1480,1776]
+      "kpi": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        296,
+        296,
+        296,
+        296,
+        296,
+        296
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        184.25,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        207.95,
+        157.55,
+        160.15,
+        211.65,
+        187.15,
+        170.05
+      ],
+      "cumKPI": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        296,
+        592,
+        888,
+        1184,
+        1480,
+        1776
+      ],
+      "cumActual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        296,
+        592,
+        888,
+        1184,
+        1480,
+        1776
+      ]
     }
   },
   "Non-food": {
     "Non-food": {
-      kpi:[751,821,899,550,580,591,581,570,601,580,581,601],
-      po:[null,null,null,null,null,null,null,null,null,null,null,null],
-      actual:[158,140,759,872.477,600.173,570.7,null,null,null,null,null,null],
-      fc:[null,null,null,null,null,null,128,562,452,892,122,782],
-      cumKPI:[751,1572,2471,3021,3601,4192,4773,5343,5944,6524,7105,7706],
-      cumActual:[158,298,1057,1929.477,2529.65,null,null,null,null,null,null,null]
+      "kpi": [
+        751,
+        821,
+        899,
+        550,
+        580,
+        591,
+        581,
+        570,
+        601,
+        580,
+        581,
+        601
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        158,
+        140,
+        759,
+        872.477,
+        600.173,
+        570.726,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        128.25,
+        562,
+        452,
+        892,
+        122,
+        782
+      ],
+      "cumKPI": [
+        751,
+        1572,
+        2471,
+        3021,
+        3601,
+        4192,
+        4773,
+        5343,
+        5944,
+        6524,
+        7105,
+        7706
+      ],
+      "cumActual": [
+        158,
+        298,
+        1057,
+        1929.477,
+        2529.65,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
     }
   }
-};
-
-const AM_COLORS = {"Nghĩa":"#4f8ef7","Tuyền":"#36d399","Châu":"#f7c948","Non-food":"#a78bfa"};
+};const AM_COLORS = {"Nghĩa":"#4f8ef7","Tuyền":"#36d399","Châu":"#f7c948","Non-food":"#a78bfa"};
 const MONTHS = ['T01','T02','T03','T04','T05','T06','T07','T08','T09','T10','T11','T12'];
 let currentAM='all', currentPL='all', mainChart, cumulChart;
 
@@ -828,8 +1598,8 @@ function handleExcelUpload(event) {
     </div>
   </div>
   <div class="cs">Số lần theo tháng · T1–T12/2026 · cập nhật trong mục ACTIVITY trong code</div>
-  <canvas id="activityChart" height="90"></canvas>
+  <canvas id="activityChart" height="525" style="box-sizing: border-box; display: block; height: 350px; width: 1167px;" width="1750"></canvas>
 </div>
 
-</body>
-</html>
+
+</body></html>
