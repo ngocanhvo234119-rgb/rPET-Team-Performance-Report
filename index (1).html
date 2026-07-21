@@ -1,0 +1,1605 @@
+<html lang="vi"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPI Dashboard 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+  :root {
+    --bg:#0f1117; --surface:#181c27; --card:#1e2336; --border:#2a3050;
+    --accent:#4f8ef7; --green:#36d399; --yellow:#f7c948; --red:#fb6f84; --purple:#a78bfa;
+    --text:#e8ecf4; --muted:#7c8db5; --dim:#3a4568;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px;}
+  .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap;}
+  .header h1{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.5px;}
+  .header .sub{font-size:12px;color:var(--muted);margin-top:4px;}
+  .am-tabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .am-tab{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+  .am-tab:hover{border-color:var(--dim);color:var(--text);}
+  .am-tab.active{color:#fff;border-color:transparent;}
+  .am-tab.active.all{background:var(--accent);}
+  .am-tab.active.nghia{background:#4f8ef7;}
+  .am-tab.active.tuyen{background:#36d399;color:#0f1117;}
+  .am-tab.active.chau{background:#f7c948;color:#0f1117;}
+  .am-tab.active.nonfood{background:#a78bfa;}
+  .pl-tab{padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
+  .pl-tab:hover{border-color:var(--dim);color:var(--text);}
+  .pl-tab.active{background:var(--dim);border-color:var(--dim);color:#fff;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+  .kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
+  .kpi-card.c1::after{background:var(--accent);} .kpi-card.c2::after{background:var(--green);} .kpi-card.c3::after{background:var(--yellow);} .kpi-card.c4::after{background:var(--red);}
+  .kpi-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
+  .kpi-val{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:5px;}
+  .kpi-val.c1{color:var(--accent);} .kpi-val.c2{color:var(--green);} .kpi-val.c3{color:var(--yellow);} .kpi-val.c4{color:var(--red);}
+  .kpi-note{font-size:11px;color:var(--muted);}
+  .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:4px;}
+  .badge.up{background:rgba(54,211,153,.15);color:var(--green);}
+  .badge.dn{background:rgba(251,111,132,.15);color:var(--red);}
+  .badge.mid{background:rgba(247,201,72,.15);color:var(--yellow);}
+  .charts-row{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px;}
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+  .ct{font-size:13px;font-weight:600;margin-bottom:3px;}
+  .cs{font-size:11px;color:var(--muted);margin-bottom:14px;}
+  .legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
+  .li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+  .ld{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+  .tbl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  th{text-align:center;padding:7px 8px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  th:first-child,th:nth-child(2){text-align:left;}
+  td{text-align:center;padding:7px 8px;border-bottom:1px solid rgba(42,48,80,.4);white-space:nowrap;}
+  td:first-child,td:nth-child(2){text-align:left;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,.02);}
+  .chip{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:600;}
+  .chip.g{background:rgba(54,211,153,.12);color:var(--green);}
+  .chip.y{background:rgba(247,201,72,.12);color:var(--yellow);}
+  .chip.r{background:rgba(251,111,132,.12);color:var(--red);}
+  .chip.na{background:rgba(122,135,181,.1);color:var(--muted);}
+  .ttype{font-size:10px;padding:2px 6px;border-radius:5px;background:var(--surface);color:var(--muted);}
+  @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-row{grid-template-columns:1fr;}}
+  @media(max-width:600px){body{padding:12px;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+
+  .drill-btn{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.3);color:#4f8ef7;border-radius:5px;padding:2px 6px;font-size:10px;cursor:pointer;margin-top:4px;display:inline-block;transition:all .15s;}
+  .drill-btn:hover{background:rgba(79,142,247,.3);}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;width:90%;max-width:920px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+  .modal-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;}
+  .modal-close{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;}
+  .modal-close:hover{color:var(--text);}
+  .modal-body{padding:20px 24px;overflow-y:auto;}
+  .modal-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .summary-card{background:var(--surface);border-radius:10px;padding:12px 16px;}
+  .summary-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+  .summary-val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;}
+
+  .upload-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
+  .upload-btn:hover{border-color:var(--green);color:var(--green);}
+  .upload-btn input{display:none;}
+  .upload-status{font-size:11px;margin-top:4px;color:var(--muted);}
+  .upload-status.ok{color:var(--green);}
+  .upload-status.err{color:var(--red);}
+</style>
+</head>
+<body>
+
+
+
+<div class="header">
+  <div>
+    <h1>📊 KPI Sales Dashboard 2026</h1>
+    <div class="sub">Theo dõi thực hiện vs KPI · Cập nhật T06/2026</div>
+  </div>
+  <div class="am-tabs">
+    <button class="am-tab all active" onclick="setAM('all',this)"><span class="dot" style="background:#4f8ef7"></span> Tất cả</button>
+    <button class="am-tab nghia" onclick="setAM('Nghĩa',this)"><span class="dot" style="background:#4f8ef7"></span> Nghĩa</button>
+    <button class="am-tab tuyen" onclick="setAM('Tuyền',this)"><span class="dot" style="background:#36d399"></span> Tuyền</button>
+    <button class="am-tab chau" onclick="setAM('Châu',this)"><span class="dot" style="background:#f7c948"></span> Châu</button>
+    <button class="am-tab nonfood" onclick="setAM('Non-food',this)"><span class="dot" style="background:#a78bfa"></span> Non-food</button>
+  </div>
+  <div class="am-tabs" style="margin-top:8px">
+    <span style="font-size:11px;color:var(--muted);margin-right:4px;align-self:center">Dòng SP:</span>
+    <button class="pl-tab active" onclick="setPL('all',this)">Tất cả</button>
+    <button class="pl-tab" onclick="setPL('rPET',this)">rPET</button>
+    <button class="pl-tab" onclick="setPL('rHDPE',this)">rHDPE</button>
+    <button class="pl-tab" onclick="setPL('Non-food',this)">Non-food</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:8px">
+    <label class="upload-btn">
+      📂 Upload file KPI Excel
+      <input type="file" id="excelUpload" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
+    </label>
+    <div class="upload-status ok" id="uploadStatus">✅ Đã load 110 khách hàng · 4 AM · dashboard đã cập nhật</div>
+    <button class="upload-btn" onclick="downloadHTML()" style="margin-top:6px;border-color:var(--accent);color:var(--accent)">
+      💾 Tải file HTML mới
+    </button>
+  </div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-card c1"><div class="kpi-lbl">KPI Cả năm</div><div class="kpi-val c1" id="card-full-kpi">35,4K</div><div class="kpi-note">tấn · kế hoạch 2026</div></div>
+  <div class="kpi-card c2"><div class="kpi-lbl">KPI Lũy kế T1–T06</div><div class="kpi-val c2" id="card-cum-kpi">16,8K</div><div class="kpi-note">tấn · kế hoạch lũy kế</div></div>
+  <div class="kpi-card c3"><div class="kpi-lbl">Thực hiện Lũy kế T1–T06</div><div class="kpi-val c3" id="card-cum-act" style="font-size:34px">15,9K</div><div class="kpi-note" id="card-ratio-note">Đạt <span class="badge mid">94.5% KPI</span> KPI lũy kế</div></div>
+  <div class="kpi-card c4"><div class="kpi-lbl">Dự báo T07 (FC)</div><div class="kpi-val c4" id="card-fc">1,2K</div><div class="kpi-note" id="card-fc-note">tấn dự báo T07 <span class="badge mid">42% KPI T07</span></div></div>
+</div>
+
+
+
+
+<div class="charts-row">
+  <div class="chart-card">
+    <div class="ct">KPI vs Thực hiện theo tháng</div>
+    <div class="cs">Đơn vị: tấn · T1–T12/2026</div>
+    <canvas id="mainChart" height="605" style="box-sizing: border-box; display: block; height: 403px; width: 756px;" width="1134"></canvas>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#fb6f84"></div>KPI tháng</div>
+      <div class="li"><div class="ld" style="background:#36d399"></div>Thực hiện</div>
+      <div class="li"><div class="ld" style="background:#a78bfa"></div>PO (đơn chốt)</div>
+      <div class="li"><div class="ld" style="background:#f7c948"></div>Dự báo (FC)</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="ct">Dự báo cuối năm vs KPI cả năm</div>
+    <div class="cs" id="forecast-cs">Actual T1–T06 + FC T07–T12 so với KPI năm (tấn)</div>
+    <canvas id="forecastChart" height="357" style="box-sizing: border-box; display: block; height: 238px; width: 357px;" width="536"></canvas>
+  </div>
+</div>
+
+<div class="chart-card" style="margin-bottom:12px">
+  <div class="ct">Lũy kế KPI vs Thực hiện</div>
+  <div class="cs">Tích lũy từ đầu năm (tấn)</div>
+  <canvas id="cumulChart" height="525" style="box-sizing: border-box; display: block; height: 350px; width: 1167px;" width="1750"></canvas>
+</div>
+
+<div class="tbl-card">
+  <div class="ct" style="margin-bottom:4px">Chi tiết từng tháng</div>
+  <div class="cs" style="margin-bottom:12px">KPI (xám) · Thực hiện (trắng) · % = TH/KPI · <span style="color:var(--purple)">tím = dùng PO tạm</span> · <span style="color:#4f8ef7">↗ = chi tiết khách hàng</span></div>
+  <table>
+    <thead>
+      <tr>
+        <th>AM</th><th>Nhóm SP</th>
+        <th>T01</th><th>T02</th><th>T03</th><th>T04</th><th>T05</th>
+        <th style="color:var(--green)">T06 ✓</th>
+        <th style="color:var(--yellow)">T07 →</th>
+        <th>KPI Lũy kế</th><th>TH Lũy kế</th><th>% Đạt</th>
+      </tr>
+    </thead>
+    <tbody id="tbl-body"><tr>
+      <td style="color:#4f8ef7;font-weight:600">Nghĩa</td>
+      <td><span class="ttype">rPET</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">364</div>
+        <div style="font-weight:600;color:inherit">363</div>
+        <span class="chip y">100%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">788</div>
+        <div style="font-weight:600;color:inherit">693</div>
+        <span class="chip y">88%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">914</div>
+        <div style="font-weight:600;color:inherit">815</div>
+        <span class="chip y">89%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">964</div>
+        <div style="font-weight:600;color:inherit">1.172,6</div>
+        <span class="chip g">122%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">678</div>
+        <div style="font-weight:600;color:inherit">751,3</div>
+        <span class="chip g">111%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">863</div>
+    <div style="font-weight:600;color:inherit">535,7</div>
+    <span class="chip r">62%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">436</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 436</div>
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rPET" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">678</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 678</div>
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rPET" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">634</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 634</div>
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rPET" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">4.570</td>
+      <td style="font-weight:600">4.330,6</td>
+      <td><span class="chip y">95%</span></td>
+    </tr><tr>
+      <td style="color:#4f8ef7;font-weight:600">Nghĩa</td>
+      <td><span class="ttype">rHDPE</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">284</div>
+        <span class="chip y">96%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">229</div>
+        <span class="chip y">77%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">392</div>
+        <span class="chip g">132%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">237,9</div>
+        <span class="chip y">80%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">296</div>
+        <div style="font-weight:600;color:inherit">332,8</div>
+        <span class="chip g">112%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:inherit">269,5</div>
+    <span class="chip y">91%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    
+    
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rHDPE" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    
+    
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rHDPE" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    
+    
+    <span class="drill-btn" data-am="Nghĩa" data-pl="rHDPE" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">1.776</td>
+      <td style="font-weight:600">1.745,1</td>
+      <td><span class="chip y">98%</span></td>
+    </tr><tr>
+      <td style="color:#36d399;font-weight:600">Tuyền</td>
+      <td><span class="ttype">rPET</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">870</div>
+        <div style="font-weight:600;color:inherit">878</div>
+        <span class="chip g">101%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">966</div>
+        <div style="font-weight:600;color:inherit">474</div>
+        <span class="chip r">49%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">980</div>
+        <div style="font-weight:600;color:inherit">1.201</div>
+        <span class="chip g">123%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">1.155</div>
+        <div style="font-weight:600;color:inherit">1.410,4</div>
+        <span class="chip g">122%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">1.153</div>
+        <div style="font-weight:600;color:inherit">1.782</div>
+        <span class="chip g">155%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">1.131</div>
+    <div style="font-weight:600;color:inherit">941,4</div>
+    <span class="chip y">83%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">1.133</div>
+    <div style="font-weight:600;color:var(--purple)">1.016,4 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip y">90%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 116,5</div>
+    <span class="drill-btn" data-am="Tuyền" data-pl="rPET" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">1.110</div>
+    <div style="font-weight:600;color:var(--purple)">121 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">11%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 988,8</div>
+    <span class="drill-btn" data-am="Tuyền" data-pl="rPET" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">1.110</div>
+    <div style="font-weight:600;color:var(--purple)">33 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">3%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 1.076,8</div>
+    <span class="drill-btn" data-am="Tuyền" data-pl="rPET" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">6.255</td>
+      <td style="font-weight:600">6.686,8</td>
+      <td><span class="chip g">107%</span></td>
+    </tr><tr>
+      <td style="color:#f7c948;font-weight:600">Châu</td>
+      <td><span class="ttype">rPET</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:inherit">0</div>
+    
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">490</div>
+    <div style="font-weight:600;color:var(--purple)">297 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">61%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 193</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rPET" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">501</div>
+    <div style="font-weight:600;color:var(--purple)">77 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">15%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 424</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rPET" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">490</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 490</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rPET" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">—</td>
+      <td style="font-weight:600">0</td>
+      <td><span class="chip na">—</span></td>
+    </tr><tr>
+      <td style="color:#f7c948;font-weight:600">Châu</td>
+      <td><span class="ttype">rHDPE</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">—</div>
+        <div style="font-weight:600;color:inherit">0</div>
+        
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">—</div>
+    <div style="font-weight:600;color:inherit">0</div>
+    
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:var(--purple)">184,3 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">62%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 111,8</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rHDPE" data-idx="6" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:var(--purple)">11 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">4%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 285</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rHDPE" data-idx="7" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">296</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 296</div>
+    <span class="drill-btn" data-am="Châu" data-pl="rHDPE" data-idx="8" onclick="drillClick(this)">↗ Chi tiết</span>
+  </td>
+      <td style="color:var(--muted)">—</td>
+      <td style="font-weight:600">0</td>
+      <td><span class="chip na">—</span></td>
+    </tr><tr>
+      <td style="color:#a78bfa;font-weight:600">Non-food</td>
+      <td><span class="ttype">Non-food</span></td>
+      <td>
+        <div style="color:var(--muted);font-size:10px">751</div>
+        <div style="font-weight:600;color:inherit">158</div>
+        <span class="chip r">21%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">821</div>
+        <div style="font-weight:600;color:inherit">140</div>
+        <span class="chip r">17%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">899</div>
+        <div style="font-weight:600;color:inherit">759</div>
+        <span class="chip y">84%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">550</div>
+        <div style="font-weight:600;color:inherit">872,5</div>
+        <span class="chip g">159%</span>
+      </td><td>
+        <div style="color:var(--muted);font-size:10px">580</div>
+        <div style="font-weight:600;color:inherit">600,2</div>
+        <span class="chip g">103%</span>
+      </td><td style="background:rgba(54,211,153,.05)">
+    <div style="color:var(--muted);font-size:10px">591</div>
+    <div style="font-weight:600;color:inherit">570,7</div>
+    <span class="chip y">97%</span>
+    
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">581</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 581</div>
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">570</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 570</div>
+    
+  </td><td style="background:rgba(247,201,72,.05)">
+    <div style="color:var(--muted);font-size:10px">601</div>
+    <div style="font-weight:600;color:var(--purple)">0 <span style="font-size:9px">(PO)</span></div>
+    <span class="chip r">0%</span>
+    <div style="font-size:9px;color:var(--red);margin-top:2px">Còn thiếu: 601</div>
+    
+  </td>
+      <td style="color:var(--muted)">4.192</td>
+      <td style="font-weight:600">3.100,4</td>
+      <td><span class="chip y">74%</span></td>
+    </tr></tbody>
+  </table>
+</div>
+
+
+<!-- Modal drill-down -->
+<div class="modal-overlay" id="drillModal" onclick="if(event.target===this)closeDrill()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Chi tiết khách hàng</div>
+      <button class="modal-close" onclick="closeDrill()">✕ Đóng</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-summary" id="modalSummary"></div>
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left">Khách hàng</th>
+            <th style="text-align:left">Sản phẩm</th>
+            <th style="text-align:left">Dòng SP</th>
+            <th>KPI</th><th>PO</th><th>Dự báo</th><th>% PO/KPI</th>
+          </tr>
+        </thead>
+        <tbody id="modalBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<script>
+const CUSTOMERS = [{"AM": "Nghĩa", "Tên khách": "NNG-CC - Unilever", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "MBF01", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "Vinmar International", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 176.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 176.0, "PO - Sep": 0.0, "Dự báo - Sep": 220.0, "KPI - Oct": 176.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 176.0, "PO - Nov": null, "Dự báo - Nov": 220.0, "KPI - Dec": 176.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "Koryfes", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": 110.0, "PO - Jul": 0.0, "Dự báo - Jul": 264.0, "KPI - Aug": 110.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 110.0, "PO - Sep": 0.0, "Dự báo - Sep": 88.0, "KPI - Oct": 110.0, "PO - Oct": 0.0, "Dự báo - Oct": 88.0, "KPI - Nov": 110.0, "PO - Nov": null, "Dự báo - Nov": 110.0, "KPI - Dec": 110.0, "PO - Dec": null, "Dự báo - Dec": 110.0}, {"AM": "Nghĩa", "Tên khách": " Svepol Americas", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 110.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 110.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "Uy Kiệt", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 110.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 220.0, "PO - Oct": 0.0, "Dự báo - Oct": 330.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 330.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 330.0}, {"AM": "Nghĩa", "Tên khách": "New Developments - Hạt PET - XK", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": 100.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 100.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 100.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 100.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 100.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 100.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "NNG-TN - Unilever - Manuchao", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "PCF01", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "International Gate", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": 88.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 88.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 66.0, "KPI - Dec": 88.0, "PO - Dec": null, "Dự báo - Dec": 66.0}, {"AM": "Nghĩa", "Tên khách": "Genesis Polymers International", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 44.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 88.0, "KPI - Sep": 44.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 88.0, "KPI - Nov": 66.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 88.0}, {"AM": "Nghĩa", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "HCBF-Whi-U", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "Genesis Distribucion De Colombia", "Tên sản phẩm": "iSS1084G", "Product line": "rPET", "KPI - Jul": 44.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 44.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 66.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "Tân Lập Thành", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "DNP - Unilever", "Tên sản phẩm": "PCF01", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "Genesis Polymers International", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "DNP - Unilever", "Tên sản phẩm": "MBF01", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "Vinmar Polymers America", "Tên sản phẩm": "rHDA03N01", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "HCBF-Yel-U", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "NNG-CC - Unilever", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": 0.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 0.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 0.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 0.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 0.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 0.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "Montachem International", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 50.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 50.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 50.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 50.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 50.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 50.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Nghĩa", "Tên khách": "Magma Int", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 66.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 66.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 66.0}, {"AM": "Nghĩa", "Tên khách": "Montachem International", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 110.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 110.0}, {"AM": "Nghĩa", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "WSS01G L>69", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": null, "Dự báo - Jul": null, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": null, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": null, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": null, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": null, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": null}, {"AM": "Nghĩa", "Tên khách": "Tân Lập Thành", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 22.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 22.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 22.0}, {"AM": "Tuyền", "Tên khách": "Suntory Pepsico Berverage CSD - SPFV", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 308.0, "PO - Jul": 682.0, "Dự báo - Jul": 682.0, "KPI - Aug": 308.0, "PO - Aug": 22.0, "Dự báo - Aug": 600.0, "KPI - Sep": 308.0, "PO - Sep": 0.0, "Dự báo - Sep": 600.0, "KPI - Oct": 350.0, "PO - Oct": 0.0, "Dự báo - Oct": 600.0, "KPI - Nov": 352.0, "PO - Nov": null, "Dự báo - Nov": 600.0, "KPI - Dec": 352.0, "PO - Dec": null, "Dự báo - Dec": 550.0}, {"AM": "Tuyền", "Tên khách": "Premium Water", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": 264.0, "PO - Jul": 0.0, "Dự báo - Jul": 660.0, "KPI - Aug": 264.0, "PO - Aug": 0.0, "Dự báo - Aug": 550.0, "KPI - Sep": 264.0, "PO - Sep": 0.0, "Dự báo - Sep": 550.0, "KPI - Oct": 264.0, "PO - Oct": 0.0, "Dự báo - Oct": 550.0, "KPI - Nov": 264.0, "PO - Nov": null, "Dự báo - Nov": 550.0, "KPI - Dec": 264.0, "PO - Dec": null, "Dự báo - Dec": 550.0}, {"AM": "Tuyền", "Tên khách": "DTP - Plascene", "Tên sản phẩm": "WSS01G L>69", "Product line": "rPET", "KPI - Jul": 44.0, "PO - Jul": 55.0, "Dự báo - Jul": 68.6, "KPI - Aug": 44.0, "PO - Aug": 0.0, "Dự báo - Aug": 12.6, "KPI - Sep": 44.0, "PO - Sep": 0.0, "Dự báo - Sep": 37.7, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 24.1, "KPI - Nov": 44.0, "PO - Nov": null, "Dự báo - Nov": 18.7, "KPI - Dec": 44.0, "PO - Dec": null, "Dự báo - Dec": 28.8}, {"AM": "Tuyền", "Tên khách": "New Developments", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": 50.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 50.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 50.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 50.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 50.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 50.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "New Developments", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 50.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 50.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 50.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 50.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 50.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 50.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Suntory Pepsico Berverage CSD - Srithai BD", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 110.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 110.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 110.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 110.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 110.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 110.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Plascene - US", "Tên sản phẩm": "WSS01G L>69", "Product line": "rPET", "KPI - Jul": 66.0, "PO - Jul": 0.0, "Dự báo - Jul": 22.0, "KPI - Aug": 66.0, "PO - Aug": 0.0, "Dự báo - Aug": 66.0, "KPI - Sep": 44.0, "PO - Sep": 0.0, "Dự báo - Sep": 88.0, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 66.0, "KPI - Nov": 66.0, "PO - Nov": null, "Dự báo - Nov": 66.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 88.0}, {"AM": "Tuyền", "Tên khách": "DTP - Plascene", "Tên sản phẩm": "WSS01", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 17.6, "Dự báo - Jul": 61.6, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 57.9, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 19.4, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 21.7, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 24.5, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 26.7}, {"AM": "Tuyền", "Tên khách": "New Developments", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Suntory Pepsico Berverage CSD - NNTN", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 55.0, "PO - Jul": 88.0, "Dự báo - Jul": 198.0, "KPI - Aug": 55.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 55.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 55.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 55.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Wiese", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 44.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 44.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 44.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "POLYCAD", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "CPSX Nhựa Duy Tân", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": 88.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 88.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 88.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 88.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 88.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 88.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "MCP/ Resinex", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 44.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 44.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Lavie", "Tên sản phẩm": "WSS01", "Product line": "rPET", "KPI - Jul": 53.9, "PO - Jul": 66.0, "Dự báo - Jul": 66.0, "KPI - Aug": 52.8, "PO - Aug": 44.0, "Dự báo - Aug": 44.0, "KPI - Sep": 52.8, "PO - Sep": 33.0, "Dự báo - Sep": 33.0, "KPI - Oct": 52.8, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Lavie", "Tên sản phẩm": "WSS01G-L", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Lavie", "Tên sản phẩm": "WSS01 mix WSS01G-L", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 11.0, "Dự báo - Jul": 11.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "DTP - Khác", "Tên sản phẩm": "WSS01G L>70", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "DTP - Olam", "Tên sản phẩm": "WSS01G L>70", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 25.9, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 25.1, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 26.9, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 25.3, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 24.5, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 19.0}, {"AM": "Tuyền", "Tên khách": "Soda stream", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Collective Polymers - Sky Blue Water", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "DTP - Muji", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 4.048, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Mida", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 56.099999999999994, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 61.050000000000004, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 47.849999999999994, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 52.800000000000004, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 33.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 33.0}, {"AM": "Tuyền", "Tên khách": "Ngọc Nghĩa", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Miss Plastic", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "Suntory Pepsico Berverage CSD - Hon Chuan", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 55.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 55.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 55.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 55.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 55.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "NNG - CC", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": 55.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 55.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 55.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 55.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 55.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "POLYCORE", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": 55.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 55.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 55.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 55.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 55.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "NHỰA ÂU LẠC", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": 55.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 55.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 55.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 55.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 55.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Tuyền", "Tên khách": "NNG - TN", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": 55.0, "PO - Jul": 19.8, "Dự báo - Jul": 19.8, "KPI - Aug": 55.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 55.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 55.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 55.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Vinafiber", "Tên sản phẩm": "Phó Sản PET Bụi Cám", "Product line": "Non-food", "KPI - Jul": 40.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 40.0, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": 40.0, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": 40.0, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": 30.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 20.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Outeirinho", "Tên sản phẩm": "Vảy FPET201", "Product line": "Non-food", "KPI - Jul": 200.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 200.0, "PO - Aug": null, "Dự báo - Aug": 220.0, "KPI - Sep": 200.0, "PO - Sep": null, "Dự báo - Sep": 330.0, "KPI - Oct": 200.0, "PO - Oct": null, "Dự báo - Oct": 550.0, "KPI - Nov": 200.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 200.0, "PO - Dec": null, "Dự báo - Dec": 550.0}, {"AM": "Quốc Anh", "Tên khách": "New Developments - Non-food - XK", "Tên sản phẩm": "WSS04SB", "Product line": "Non-food", "KPI - Jul": 100.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 100.0, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": 100.0, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": 100.0, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": 100.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 100.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "New Developments - Non-food - XK", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "New Developments - Non-food - XK", "Tên sản phẩm": "WSS05SB-2", "Product line": "Non-food", "KPI - Jul": 80.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 100.0, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": 100.0, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": 100.0, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": 100.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 130.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Quang Chí Bảo", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": 40.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 30.0, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": 40.0, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": 40.0, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": 30.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 40.0, "PO - Dec": null, "Dự báo - Dec": 110.0}, {"AM": "Quốc Anh", "Tên khách": "New Developments - Non-food - XK", "Tên sản phẩm": "WSS05SB-2", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "NHỰA LỘC PHÁT", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": 0.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 0.0, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": 0.0, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 11.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "New Developments - Non-food - XK", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": 100.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 100.0, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": 100.0, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": 100.0, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": 100.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 100.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Antex", "Tên sản phẩm": "WSS05SB (0.55-0.6)", "Product line": "Non-food", "KPI - Jul": 21.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": 21.0, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": 21.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Cường Gia Phát", "Tên sản phẩm": "Vảy PET GC Dây đai", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Vinafiber", "Tên sản phẩm": "Vảy PET Tomra SLR", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 90.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 100.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 100.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 100.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 100.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 100.0}, {"AM": "Quốc Anh", "Tên khách": "Đại Lục", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 5.25, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Hưng Dụ", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "HYOSUNG VN", "Tên sản phẩm": "WSS04SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Antex", "Tên sản phẩm": "WSS04SD", "Product line": "Non-food", "KPI - Jul": 21.0, "PO - Jul": 0.0, "Dự báo - Jul": 22.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 22.0, "KPI - Sep": 21.0, "PO - Sep": null, "Dự báo - Sep": 22.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 22.0, "KPI - Nov": 21.0, "PO - Nov": null, "Dự báo - Nov": 22.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 22.0}, {"AM": "Quốc Anh", "Tên khách": "VĨNH MINH PHƯỚC PET", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Đan Thư ", "Tên sản phẩm": "Vảy PET GC Dây đai", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Hưng Dụ", "Tên sản phẩm": "WSS04NC", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Antex", "Tên sản phẩm": "WSS05SB \n(IV >=0.6)", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Việt Nhựa", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Antex", "Tên sản phẩm": "WSS05SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Antex", "Tên sản phẩm": "WSS04SB", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Đan Thư", "Tên sản phẩm": "Vảy PET Tomra SLR", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "DTP", "Tên sản phẩm": "WSS03NC", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 11.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Vy Kỳ", "Tên sản phẩm": "WSS03NC", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Dương Thuận Phát", "Tên sản phẩm": "WSS03NC", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Tricon", "Tên sản phẩm": "Vảy FPET201", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 220.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 220.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Đan Thư", "Tên sản phẩm": "Phó Sản PET Bụi Cám", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Quốc Anh", "Tên khách": "Gia Tường", "Tên sản phẩm": "Vảy PET GC Dây đai", "Product line": "Non-food", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": null, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": null, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": null, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "Lion Corp/ Itochu", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "New Developments", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 50.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 50.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 50.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 50.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 50.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 50.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "CN Cty Coca - Hà Nội", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "COCA COLA ĐÀ NẴNG", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "CN COCA-COLA VN - LONG AN", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "PTI- Retal", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": 44.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 44.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 44.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 44.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 44.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "New Developments", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": 50.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 50.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 50.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 50.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 50.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 50.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "MAS CO.LTD", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 66.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 66.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 66.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "Polyresin", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 44.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "Polyresin", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 44.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "ITD Polyresin", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "Fega", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "Fega", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "AGRIFREDA", "Tên sản phẩm": "WSS03G", "Product line": "rPET", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "MERAXIS AG", "Tên sản phẩm": "iSS01G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "Cocacola", "Tên sản phẩm": "iSS01084G", "Product line": "rPET", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 66.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 66.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 66.0}, {"AM": "Châu", "Tên khách": "NNG-CC - Unilever", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": 264.0, "PO - Jul": 198.0, "Dự báo - Jul": 220.0, "KPI - Aug": 264.0, "PO - Aug": 88.0, "Dự báo - Aug": 220.0, "KPI - Sep": 264.0, "PO - Sep": 0.0, "Dự báo - Sep": 220.0, "KPI - Oct": 264.0, "PO - Oct": 0.0, "Dự báo - Oct": 220.0, "KPI - Nov": 260.0, "PO - Nov": null, "Dự báo - Nov": 220.0, "KPI - Dec": 220.0, "PO - Dec": null, "Dự báo - Dec": 220.0}, {"AM": "Châu", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "MBF01", "Product line": "rHDPE", "KPI - Jul": 220.0, "PO - Jul": 77.0, "Dự báo - Jul": 77.0, "KPI - Aug": 220.0, "PO - Aug": 0.0, "Dự báo - Aug": 44.0, "KPI - Sep": 220.0, "PO - Sep": 0.0, "Dự báo - Sep": 44.0, "KPI - Oct": 220.0, "PO - Oct": 0.0, "Dự báo - Oct": 51.4, "KPI - Nov": 220.0, "PO - Nov": null, "Dự báo - Nov": 44.0, "KPI - Dec": 220.0, "PO - Dec": null, "Dự báo - Dec": 37.8}, {"AM": "Châu", "Tên khách": "NNG-TN - Unilever - Manuchao", "Tên sản phẩm": "WSS01G", "Product line": "rPET", "KPI - Jul": 66.0, "PO - Jul": 0.0, "Dự báo - Jul": 88.0, "KPI - Aug": 66.0, "PO - Aug": 0.0, "Dự báo - Aug": 88.0, "KPI - Sep": 66.0, "PO - Sep": 0.0, "Dự báo - Sep": 88.0, "KPI - Oct": 66.0, "PO - Oct": 0.0, "Dự báo - Oct": 110.0, "KPI - Nov": 66.0, "PO - Nov": null, "Dự báo - Nov": 110.0, "KPI - Dec": 66.0, "PO - Dec": null, "Dự báo - Dec": 110.0}, {"AM": "Châu", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "PCF01", "Product line": "rHDPE", "KPI - Jul": 44.0, "PO - Jul": 71.5, "Dự báo - Jul": 92.2, "KPI - Aug": 44.0, "PO - Aug": 0.0, "Dự báo - Aug": 74.8, "KPI - Sep": 44.0, "PO - Sep": 0.0, "Dự báo - Sep": 77.4, "KPI - Oct": 44.0, "PO - Oct": 0.0, "Dự báo - Oct": 97.0, "KPI - Nov": 44.0, "PO - Nov": null, "Dự báo - Nov": 79.9, "KPI - Dec": 44.0, "PO - Dec": null, "Dự báo - Dec": 69.0}, {"AM": "Châu", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "HCBF-Whi-U", "Product line": "rHDPE", "KPI - Jul": 22.0, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": 22.0, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": 22.0, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": 22.0, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": 22.0, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": 22.0, "PO - Dec": null, "Dự báo - Dec": 0.0}, {"AM": "Châu", "Tên khách": "DTP - Unilever", "Tên sản phẩm": "WSS01G L>69", "Product line": "rPET", "KPI - Jul": 0.0, "PO - Jul": 11.0, "Dự báo - Jul": 11.0, "KPI - Aug": 11.0, "PO - Aug": 0.0, "Dự báo - Aug": 11.0, "KPI - Sep": 0.0, "PO - Sep": 0.0, "Dự báo - Sep": 11.0, "KPI - Oct": 11.0, "PO - Oct": 0.0, "Dự báo - Oct": 11.0, "KPI - Nov": 0.0, "PO - Nov": null, "Dự báo - Nov": 11.0, "KPI - Dec": 0.0, "PO - Dec": null, "Dự báo - Dec": 11.0}, {"AM": "Châu", "Tên khách": "DNP - Unilever", "Tên sản phẩm": "PCF01", "Product line": "rHDPE", "KPI - Jul": 10.0, "PO - Jul": 24.75, "Dự báo - Jul": 38.75, "KPI - Aug": 10.0, "PO - Aug": 0.0, "Dự báo - Aug": 38.75, "KPI - Sep": 10.0, "PO - Sep": 0.0, "Dự báo - Sep": 38.75, "KPI - Oct": 10.0, "PO - Oct": 0.0, "Dự báo - Oct": 63.25, "KPI - Nov": 10.0, "PO - Nov": null, "Dự báo - Nov": 63.25, "KPI - Dec": 10.0, "PO - Dec": null, "Dự báo - Dec": 63.25}, {"AM": "Châu", "Tên khách": "DNP - Unilever", "Tên sản phẩm": "MBF01", "Product line": "rHDPE", "KPI - Jul": null, "PO - Jul": 0.0, "Dự báo - Jul": 0.0, "KPI - Aug": null, "PO - Aug": 0.0, "Dự báo - Aug": 0.0, "KPI - Sep": null, "PO - Sep": 0.0, "Dự báo - Sep": 0.0, "KPI - Oct": null, "PO - Oct": 0.0, "Dự báo - Oct": 0.0, "KPI - Nov": null, "PO - Nov": null, "Dự báo - Nov": 0.0, "KPI - Dec": null, "PO - Dec": null, "Dự báo - Dec": 0.0}];
+const MONTH_MAP = {'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
+const MONTH_LABELS = {6:'T07',7:'T08',8:'T09',9:'T10',10:'T11',11:'T12'};
+
+function openDrill(am, pl, monthIdx) {
+  const monthName = Object.keys(MONTH_MAP).find(k=>MONTH_MAP[k]===monthIdx);
+  const monthLabel = MONTH_LABELS[monthIdx];
+  const color = AM_COLORS[am] || '#4f8ef7';
+  let rows = CUSTOMERS.filter(c => {
+    if(c['AM'] !== am) return false;
+    if(pl !== 'all' && c['Product line'] !== pl) return false;
+    return true;
+  });
+  let totalKPI=0, totalPO=0, totalFC=0;
+  rows.forEach(r=>{
+    totalKPI += r['KPI - '+monthName]||0;
+    totalPO  += r['PO - '+monthName]||0;
+    totalFC  += r['Dự báo - '+monthName]||0;
+  });
+  const pctPO = totalKPI>0 ? Math.round(totalPO/totalKPI*100) : null;
+  document.getElementById('modalTitle').innerHTML = '<span style="color:'+color+'">'+am+'</span> · '+(pl==='all'?'Tất cả dòng SP':pl)+' · '+monthLabel;
+  document.getElementById('modalSummary').innerHTML = `
+    <div class="summary-card">
+      <div class="summary-lbl">Tổng KPI ${monthLabel}</div>
+      <div class="summary-val" style="color:#fb6f84">${fmt(totalKPI,0)} <span style="font-size:13px;color:var(--muted)">tấn</span></div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-lbl">Tổng PO ${monthLabel}</div>
+      <div class="summary-val" style="color:#a78bfa">${fmt(totalPO,0)} <span style="font-size:13px;color:var(--muted)">tấn</span></div>
+      ${pctPO!==null?'<div style="font-size:11px;margin-top:4px;color:'+(pctPO>=100?'var(--green)':pctPO>=70?'var(--yellow)':'var(--red)')+'">'+pctPO+'% KPI</div>':''}
+    </div>
+    <div class="summary-card">
+      <div class="summary-lbl">Tổng Dự báo ${monthLabel}</div>
+      <div class="summary-val" style="color:#f7c948">${fmt(totalFC,0)} <span style="font-size:13px;color:var(--muted)">tấn</span></div>
+    </div>`;
+  rows.sort((a,b)=>(b['KPI - '+monthName]||0)-(a['KPI - '+monthName]||0));
+  const tbody = document.getElementById('modalBody');
+  tbody.innerHTML = '';
+  rows.forEach(r=>{
+    const kpi = r['KPI - '+monthName];
+    const po  = r['PO - '+monthName];
+    const fc  = r['Dự báo - '+monthName];
+    const pct = kpi>0&&po!=null ? po/kpi : null;
+    const plColor = {'rPET':'#4f8ef7','rHDPE':'#36d399','Non-food':'#a78bfa'}[r['Product line']]||'#7c8db5';
+    tbody.innerHTML += '<tr>'
+      +'<td style="text-align:left;font-weight:500">'+(r['Tên khách']||'—')+'</td>'
+      +'<td style="text-align:left;color:var(--muted);font-size:11px">'+(r['Tên sản phẩm']||'—')+'</td>'
+      +'<td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:'+plColor+'">'+(r['Product line']||'—')+'</span></td>'
+      +'<td style="color:'+(kpi!=null&&kpi>0?'var(--red)':'var(--muted)')+';font-weight:'+(kpi!=null&&kpi>0?'600':'400')+'">'+(kpi!=null?fmt(kpi,0):'—')+'</td>'
+      +'<td style="color:#a78bfa;font-weight:600">'+(po!=null?fmt(po,0):'—')+'</td>'
+      +'<td style="color:#f7c948">'+(fc!=null?fmt(fc,0):'—')+'</td>'
+      +'<td>'+(pct!==null?ratioChip(pct):'<span class="chip na">—</span>')+'</td>'
+      +'</tr>';
+  });
+  document.getElementById('drillModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeDrill(){
+  document.getElementById('drillModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrill();});
+
+// ===================== RAW DATA =====================
+const RAW = {
+  "Nghĩa": {
+    "rPET": {
+      "kpi": [
+        364,
+        787.5,
+        914,
+        963.5,
+        678,
+        862.8,
+        436,
+        678,
+        634,
+        788,
+        568,
+        546
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        363,
+        693,
+        815,
+        1172.6,
+        751.3,
+        535.7,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        110,
+        374,
+        528,
+        902,
+        792
+      ],
+      "cumKPI": [
+        364,
+        1151.5,
+        2065.5,
+        3029,
+        3707,
+        4569.8,
+        5005.8,
+        5683.8,
+        6317.8,
+        7105.8,
+        7673.8,
+        8219.8
+      ],
+      "cumActual": [
+        363,
+        1056,
+        1871,
+        3043.6,
+        3794.9,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "rHDPE": {
+      "kpi": [
+        296,
+        296,
+        296,
+        296,
+        296,
+        296,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        284,
+        229,
+        392,
+        237.875,
+        332.75,
+        269.5,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cumKPI": [
+        296,
+        592,
+        888,
+        1184,
+        1480,
+        1776,
+        1776,
+        1776,
+        1776,
+        1776,
+        1776,
+        1776
+      ],
+      "cumActual": [
+        284,
+        513,
+        905,
+        1142.875,
+        1475.625,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  },
+  "Tuyền": {
+    "rPET": {
+      "kpi": [
+        870,
+        966,
+        980,
+        1154.9,
+        1152.9,
+        1130.9,
+        1132.9,
+        1109.8,
+        1109.8,
+        1129.8,
+        1145,
+        1112
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1016.4,
+        121,
+        33,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        878,
+        474,
+        1201,
+        1410.4,
+        1782,
+        941.424,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        623,
+        1652.15,
+        1493.398,
+        1428.3,
+        1430.5,
+        1369.5
+      ],
+      "cumKPI": [
+        870,
+        1836,
+        2816,
+        3970.9,
+        5123.8,
+        6254.7,
+        7387.6,
+        8497.4,
+        9607.2,
+        10737,
+        11882,
+        12994
+      ],
+      "cumActual": [
+        878,
+        1352,
+        2553,
+        3963.4,
+        5745.4,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  },
+  "Châu": {
+    "rPET": {
+      "kpi": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        490,
+        501,
+        490,
+        501,
+        486,
+        446
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        297,
+        77,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        385,
+        341,
+        363,
+        407,
+        451,
+        407
+      ],
+      "cumKPI": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        490,
+        991,
+        1481,
+        1982,
+        2468,
+        2914
+      ],
+      "cumActual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        650,
+        1355,
+        2093,
+        2952,
+        3664,
+        4314
+      ]
+    },
+    "rHDPE": {
+      "kpi": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        296,
+        296,
+        296,
+        296,
+        296,
+        296
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        184.25,
+        11,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        207.95,
+        225.75,
+        275.25,
+        243.375,
+        261.25,
+        258.5
+      ],
+      "cumKPI": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        296,
+        592,
+        888,
+        1184,
+        1480,
+        1776
+      ],
+      "cumActual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        296,
+        592,
+        888,
+        1184,
+        1480,
+        1776
+      ]
+    }
+  },
+  "Non-food": {
+    "Non-food": {
+      "kpi": [
+        751,
+        821,
+        899,
+        550,
+        580,
+        591,
+        581,
+        570,
+        601,
+        580,
+        581,
+        601
+      ],
+      "po": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        158,
+        140,
+        759,
+        872.477,
+        600.173,
+        570.726,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "fc": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        5.25,
+        342,
+        452,
+        892,
+        122,
+        782
+      ],
+      "cumKPI": [
+        751,
+        1572,
+        2471,
+        3021,
+        3601,
+        4192,
+        4773,
+        5343,
+        5944,
+        6524,
+        7105,
+        7706
+      ],
+      "cumActual": [
+        158,
+        298,
+        1057,
+        1929.477,
+        2529.65,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  }
+};const AM_COLORS = {"Nghĩa":"#4f8ef7","Tuyền":"#36d399","Châu":"#f7c948","Non-food":"#a78bfa"};
+const MONTHS = ['T01','T02','T03','T04','T05','T06','T07','T08','T09','T10','T11','T12'];
+let currentAM='all', currentPL='all', mainChart, cumulChart;
+
+function fmt(v,dec=1){if(v==null||isNaN(v))return'—';return v.toLocaleString('vi-VN',{maximumFractionDigits:dec});}
+function fmtK(v){if(v==null||isNaN(v))return'—';if(v>=1000)return(v/1000).toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})+'K';return v.toLocaleString('vi-VN',{maximumFractionDigits:1});}
+function ratioChip(r){if(r==null)return'<span class="chip na">—</span>';const pct=(r*100).toFixed(0)+'%';if(r>=1)return`<span class="chip g">${pct}</span>`;if(r>=0.7)return`<span class="chip y">${pct}</span>`;return`<span class="chip r">${pct}</span>`;}
+function amEntries(am,pl){pl=pl||currentPL;let entries;if(am==='all'){entries=Object.entries(RAW).flatMap(([a,pls])=>Object.entries(pls).map(([p,d])=>({am:a,pl:p,d})));}else{entries=Object.entries(RAW[am]).map(([p,d])=>({am,pl:p,d}));}if(pl!=='all')entries=entries.filter(e=>e.pl===pl);return entries;}
+
+function aggregate(am) {
+  const entries=amEntries(am);
+  const kpi=Array(12).fill(0),actual=Array(12).fill(null),po=Array(12).fill(null),fc=Array(12).fill(null);
+  const cumKPI=Array(12).fill(0),cumAct=Array(12).fill(null);
+  entries.forEach(({d})=>{
+    d.kpi.forEach((v,i)=>{if(v!=null)kpi[i]+=v;});
+    d.actual.forEach((v,i)=>{if(v!=null)actual[i]=(actual[i]||0)+v;});
+    if(d.po)d.po.forEach((v,i)=>{if(v!=null&&v>0)po[i]=(po[i]||0)+v;});
+    d.fc.forEach((v,i)=>{if(v!=null)fc[i]=(fc[i]||0)+v;});
+    d.cumKPI.forEach((v,i)=>{if(v!=null)cumKPI[i]+=v;});
+  });
+  let running=0;
+  for(let i=0;i<12;i++){if(actual[i]!=null){running+=actual[i];cumAct[i]=+running.toFixed(3);}}
+  return {kpi,actual,po,fc,cumKPI,cumAct};
+}
+
+function updateCards(am) {
+  const agg=aggregate(am);
+  const fullKPI=agg.kpi.reduce((s,v)=>s+(v||0),0);
+  let lastActualIdx=-1;
+  for(let i=0;i<12;i++)if(agg.cumAct[i]!=null)lastActualIdx=i;
+  const lastMonthLabel=lastActualIdx>=0?MONTHS[lastActualIdx]:'—';
+  const cumKPILatest=lastActualIdx>=0?agg.cumKPI[lastActualIdx]:0;
+  const cumActLatest=lastActualIdx>=0?agg.cumAct[lastActualIdx]:0;
+  const ratio=cumKPILatest>0?cumActLatest/cumKPILatest:null;
+  const fcNextIdx=lastActualIdx+1;
+  const fcNext=fcNextIdx<12?agg.fc[fcNextIdx]:null;
+  const kpiNext=fcNextIdx<12?agg.kpi[fcNextIdx]:null;
+  const fcRatio=(fcNext!=null&&kpiNext>0)?fcNext/kpiNext:null;
+  const fcLabel=fcNextIdx<12?MONTHS[fcNextIdx]:'—';
+  document.getElementById('card-full-kpi').textContent=fmtK(fullKPI);
+  document.getElementById('card-cum-kpi').textContent=fmtK(cumKPILatest);
+  document.getElementById('card-cum-act').textContent=fmtK(cumActLatest);
+  document.getElementById('card-fc').textContent=fcNext!=null?fmtK(fcNext):'—';
+  const badgeClass=ratio==null?'mid':ratio>=1?'up':ratio>=0.7?'mid':'dn';
+  const ratioTxt=ratio!=null?(ratio*100).toFixed(1)+'% KPI':'—';
+  document.getElementById('card-ratio-note').innerHTML=`Đạt <span class="badge ${badgeClass}">${ratioTxt}</span> KPI lũy kế`;
+  const fcBadge=fcRatio!=null?`<span class="badge mid">${(fcRatio*100).toFixed(0)}% KPI ${fcLabel}</span>`:'';
+  document.getElementById('card-fc-note').innerHTML=`tấn dự báo ${fcLabel} ${fcBadge}`;
+  document.getElementById('card-cum-kpi').closest('.kpi-card').querySelector('.kpi-lbl').textContent=`KPI Lũy kế T1–${lastMonthLabel}`;
+  document.getElementById('card-cum-act').closest('.kpi-card').querySelector('.kpi-lbl').textContent=`Thực hiện Lũy kế T1–${lastMonthLabel}`;
+  document.getElementById('card-fc').closest('.kpi-card').querySelector('.kpi-lbl').textContent=`Dự báo ${fcLabel} (FC)`;
+}
+
+function buildMainChart(am) {
+  const agg=aggregate(am);
+  const ctx=document.getElementById('mainChart').getContext('2d');
+  if(mainChart)mainChart.destroy();
+  mainChart=new Chart(ctx,{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'KPI',data:agg.kpi,backgroundColor:'rgba(251,111,132,.18)',borderColor:'#fb6f84',borderWidth:2,borderRadius:4,order:1},
+    {label:'Thực hiện',data:agg.actual,backgroundColor:'rgba(54,211,153,.25)',borderColor:'#36d399',borderWidth:2,borderRadius:4,order:2},
+    {label:'PO (đơn chốt)',data:agg.po,backgroundColor:'rgba(167,139,250,.25)',borderColor:'#a78bfa',borderWidth:2,borderRadius:4,order:3},
+    {label:'Dự báo',data:agg.fc,type:'line',borderColor:'#f7c948',backgroundColor:'rgba(247,201,72,.07)',borderWidth:2,borderDash:[4,3],pointRadius:3,tension:0.3,order:0}
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,titleColor:'#e8ecf4',bodyColor:'#7c8db5',callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw):'—'} tấn`}}},scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+}
+
+function buildCumulChart(am) {
+  const agg=aggregate(am);
+  const cumFC=Array(12).fill(null);
+  let lastActIdx=-1;
+  for(let i=0;i<12;i++)if(agg.cumAct[i]!=null)lastActIdx=i;
+  if(lastActIdx>=0){
+    let running=agg.cumAct[lastActIdx];
+    cumFC[lastActIdx]=running;
+    for(let i=lastActIdx+1;i<12;i++){if(agg.fc[i]!=null){running+=agg.fc[i];cumFC[i]=+running.toFixed(1);}}
+  }
+  const ctx=document.getElementById('cumulChart').getContext('2d');
+  if(cumulChart)cumulChart.destroy();
+  cumulChart=new Chart(ctx,{type:'line',data:{labels:MONTHS,datasets:[
+    {label:'Lũy kế KPI',data:agg.cumKPI,borderColor:'#fb6f84',backgroundColor:'rgba(251,111,132,.07)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#fb6f84',borderWidth:2},
+    {label:'Lũy kế TH',data:agg.cumAct,borderColor:'#36d399',backgroundColor:'rgba(54,211,153,.1)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#36d399',borderWidth:2},
+    {label:'Lũy kế FC',data:cumFC,borderColor:'#f7c948',backgroundColor:'transparent',fill:false,tension:0.4,pointRadius:3,pointBackgroundColor:'#f7c948',borderWidth:2,borderDash:[5,4]}
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw,0):'—'} tấn`}}},scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+}
+
+function buildMonthCell(d,idx,highlight='',am,pl) {
+  const k=d.kpi[idx];
+  const ac=d.actual[idx];
+  const po=d.po?d.po[idx]:null;
+  const useVal=ac!=null?ac:(po!=null?po:null);
+  const isPO=ac==null&&useVal!=null;
+  const r=(k>0&&useVal!=null)?useVal/k:null;
+  const remain=isPO&&k!=null&&useVal!=null?k-useVal:null;
+  const hasDrill=idx>=6&&am&&CUSTOMERS.some(c=>c['AM']===am);
+  return `<td style="${highlight}">
+    <div style="color:var(--muted);font-size:10px">${fmt(k,0)}</div>
+    <div style="font-weight:600;color:${isPO?'var(--purple)':'inherit'}">${useVal!=null?fmt(useVal,1):'—'}${isPO?' <span style="font-size:9px">(PO)</span>':''}</div>
+    ${r!=null?ratioChip(r):''}
+    ${remain!=null?`<div style="font-size:9px;color:${remain<=0?'var(--green)':'var(--red)'};margin-top:2px">${remain<=0?'Vượt: +'+fmt(Math.abs(remain),1):'Còn thiếu: '+fmt(remain,1)}</div>`:''}
+    ${hasDrill?'<span class="drill-btn" data-am="'+am+'" data-pl="'+(pl||'all')+'" data-idx="'+idx+'" onclick="drillClick(this)">↗ Chi tiết</span>':''}
+  </td>`;
+}
+
+function buildTable(am) {
+  const tbody=document.getElementById('tbl-body');
+  tbody.innerHTML='';
+  const entries=amEntries(am);
+  entries.forEach(({am:a,pl,d})=>{
+    const color=AM_COLORS[a];
+    let cells='';
+    for(let i=0;i<5;i++){
+      const k=d.kpi[i],ac=d.actual[i],po=d.po?d.po[i]:null;
+      const useVal=ac!=null?ac:(po!=null?po:null);
+      const isPO=ac==null&&useVal!=null;
+      const r=(k>0&&useVal!=null)?useVal/k:null;
+      cells+=`<td>
+        <div style="color:var(--muted);font-size:10px">${fmt(k,0)}</div>
+        <div style="font-weight:600;color:${isPO?'var(--purple)':'inherit'}">${useVal!=null?fmt(useVal,1):'—'}${isPO?' <span style="font-size:9px">(PO)</span>':''}</div>
+        ${r!=null?ratioChip(r):''}
+      </td>`;
+    }
+    cells+=buildMonthCell(d,5,'background:rgba(54,211,153,.05)',a,pl);
+    cells+=buildMonthCell(d,6,'background:rgba(247,201,72,.05)',a,pl);
+    cells+=buildMonthCell(d,7,'background:rgba(247,201,72,.05)',a,pl);
+    cells+=buildMonthCell(d,8,'background:rgba(247,201,72,.05)',a,pl);
+    let cumActLatest=0,lastActIdx=-1;
+    for(let i=0;i<12;i++)if(d.actual[i]!=null){cumActLatest+=d.actual[i];lastActIdx=i;}
+    const cumKPILatest=lastActIdx>=0?d.cumKPI[lastActIdx]:d.cumKPI[4];
+    const cumRatio=cumKPILatest>0&&lastActIdx>=0?cumActLatest/cumKPILatest:null;
+    tbody.innerHTML+=`<tr>
+      <td style="color:${color};font-weight:600">${a}</td>
+      <td><span class="ttype">${pl}</span></td>
+      ${cells}
+      <td style="color:var(--muted)">${fmt(cumKPILatest,0)}</td>
+      <td style="font-weight:600">${fmt(cumActLatest,1)}</td>
+      <td>${ratioChip(cumRatio)}</td>
+    </tr>`;
+  });
+}
+
+function buildForecastChart(am) {
+  const ctx=document.getElementById('forecastChart').getContext('2d');
+  if(window._forecastChart)window._forecastChart.destroy();
+  const ams=am==='all'?Object.keys(RAW):[am];
+  const kpiData=[],forecastData=[],labels=[];
+  ams.forEach(a=>{
+    let fullKPI=0,forecast=0;
+    Object.values(RAW[a]).forEach(d=>{
+      fullKPI+=d.cumKPI[11]||0;
+      let lastActual=0,lastActualIdx=-1,running=0;
+      for(let i=0;i<12;i++){if(d.actual[i]!=null){running+=d.actual[i];lastActual=running;lastActualIdx=i;}}
+      let fc=lastActualIdx>=0?lastActual:0;
+      for(let i=lastActualIdx+1;i<12;i++)if(d.fc[i]!=null)fc+=d.fc[i];
+      forecast+=fc;
+    });
+    labels.push(a);
+    kpiData.push(+fullKPI.toFixed(1));
+    forecastData.push(+forecast.toFixed(1));
+  });
+  const agg=aggregate(am);
+  let lastIdx=-1;
+  for(let i=0;i<12;i++)if(agg.cumAct[i]!=null)lastIdx=i;
+  const nextIdx=lastIdx+1;
+  if(lastIdx>=0&&nextIdx<12){
+    document.getElementById('forecast-cs').textContent=`Actual T1–${MONTHS[lastIdx]} + FC ${MONTHS[nextIdx]}–T12 so với KPI năm (tấn)`;
+  }
+  window._forecastChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'KPI cả năm',data:kpiData,backgroundColor:'rgba(251,111,132,.2)',borderColor:'#fb6f84',borderWidth:2,borderRadius:5},
+    {label:'Dự báo cuối năm',data:forecastData,backgroundColor:'rgba(247,201,72,.2)',borderColor:'#f7c948',borderWidth:2,borderRadius:5}
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw,0)} tấn`}}},scales:{x:{ticks:{color:'#e8ecf4',font:{size:12,weight:'600'}},grid:{display:false}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+}
+
+
+function drillClick(el) {
+  openDrill(el.dataset.am, el.dataset.pl, parseInt(el.dataset.idx));
+}
+
+function setAM(am,el){currentAM=am;document.querySelectorAll('.am-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();
+buildActivityChart();}
+function setPL(pl,el){currentPL=pl;document.querySelectorAll('.pl-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
+function renderAll(){updateCards(currentAM);buildMainChart(currentAM);buildCumulChart(currentAM);buildTable(currentAM);buildForecastChart(currentAM);}
+
+const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
+  const ctx=chart.ctx;
+  const isCumulChart=chart.canvas.id==='cumulChart';
+  const isMainChart=chart.canvas.id==='mainChart';
+  const isForecastChart=chart.canvas.id==='forecastChart';
+  const isActivityChart=chart.canvas.id==='activityChart';
+  if(isMainChart){
+    chart.data.datasets.forEach((dataset,i)=>{
+      const meta=chart.getDatasetMeta(i);
+      const isLine=dataset.type==='line';
+      meta.data.forEach((el,idx)=>{
+        const v=dataset.data[idx];
+        if(v==null||v===0)return;
+        const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
+        ctx.save();ctx.font=isLine?'9px Inter':'bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-(isLine?6:4));ctx.restore();
+      });
+    });
+    const kpiDataset=chart.data.datasets.find(d=>d.label==='KPI');
+    const actDataset=chart.data.datasets.find(d=>d.label==='Thực hiện');
+    if(kpiDataset&&actDataset){
+      const kpiMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(kpiDataset));
+      const actMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(actDataset));
+      kpiMeta.data.forEach((el,idx)=>{
+        const kv=kpiDataset.data[idx],av=actDataset.data[idx];
+        if(kv==null||av==null||kv===0)return;
+        const pct=Math.round(av/kv*100)+'%';
+        const topEl=el.y<actMeta.data[idx].y?el:actMeta.data[idx];
+        ctx.save();ctx.font='bold 10px Inter';ctx.fillStyle=av>=kv?'#36d399':'#fb6f84';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(pct,topEl.x,topEl.y-16);ctx.restore();
+      });
+    }
+    return;
+  }
+  if(isForecastChart){
+    chart.data.datasets.forEach((dataset,i)=>{
+      const meta=chart.getDatasetMeta(i);
+      meta.data.forEach((el,idx)=>{
+        const v=dataset.data[idx];
+        if(v==null||v===0)return;
+        const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
+        ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-4);ctx.restore();
+      });
+    });
+    const kpiD=chart.data.datasets.find(d=>d.label==='KPI cả năm');
+    const fcD=chart.data.datasets.find(d=>d.label==='Dự báo cuối năm');
+    if(kpiD&&fcD){
+      const kpiM=chart.getDatasetMeta(chart.data.datasets.indexOf(kpiD));
+      const fcM=chart.getDatasetMeta(chart.data.datasets.indexOf(fcD));
+      kpiM.data.forEach((el,idx)=>{
+        const kv=kpiD.data[idx],fv=fcD.data[idx];
+        if(kv==null||fv==null||kv===0)return;
+        const pct=Math.round(fv/kv*100)+'%';
+        const topEl=el.y<fcM.data[idx].y?el:fcM.data[idx];
+        ctx.save();ctx.font='bold 10px Inter';ctx.fillStyle=fv>=kv?'#36d399':'#fb6f84';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(pct,topEl.x,topEl.y-16);ctx.restore();
+      });
+    }
+    return;
+  }
+  if(isActivityChart){
+    chart.data.datasets.forEach((dataset,i)=>{
+      const meta=chart.getDatasetMeta(i);
+      meta.data.forEach((el,idx)=>{
+        const v=dataset.data[idx];
+        if(v==null||v===0)return;
+        ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(v,el.x,el.y-4);ctx.restore();
+      });
+    });
+    return;
+  }
+  if(isCumulChart){
+    chart.data.datasets.forEach((dataset,i)=>{
+      const meta=chart.getDatasetMeta(i);
+      meta.data.forEach((el,idx)=>{
+        const v=dataset.data[idx];
+        if(v==null||v===0)return;
+        const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
+        ctx.save();ctx.font='9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-6);ctx.restore();
+      });
+    });
+    const thDataset=chart.data.datasets.find(d=>d.label==='Lũy kế TH');
+    const kpiDataset=chart.data.datasets.find(d=>d.label==='Lũy kế KPI');
+    if(!thDataset||!kpiDataset)return;
+    const thMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(thDataset));
+    thMeta.data.forEach((el,idx)=>{
+      const tv=thDataset.data[idx],kv=kpiDataset.data[idx];
+      if(tv==null||kv==null||kv===0)return;
+      const pct=Math.round(tv/kv*100)+'%';
+      ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=tv>=kv?'#36d399':'#fb6f84';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(pct,el.x,el.y-18);ctx.restore();
+    });
+  }
+}};
+
+
+// ===================== ACTIVITY DATA =====================
+// Cập nhật số liệu tại đây mỗi tháng
+const ACTIVITY = {
+  sample: {
+    "Nghĩa":   [3,0,4,0,0,0,null,null,null,null,null,null],
+    "Tuyền":   [5,0,3,2,3,0,null,null,null,null,null,null],
+    "Châu":    [null,null,null,null,null,null,null,null,null,null,null,null],
+  },
+  new: {
+    "Nghĩa":   [0,0,0,0,0,0,null,null,null,null,null,null],
+    "Tuyền":   [0,0,2,1,0,0,null,null,null,null,null,null],
+    "Châu":    [null,null,null,null,null,null,null,null,null,null,null,null],
+  }
+};
+
+let currentActivityView = 'sample';
+let activityChart;
+
+function setActivityView(view, el) {
+  currentActivityView = view;
+  document.querySelectorAll('#act-btn-sample,#act-btn-new').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  buildActivityChart();
+}
+
+function buildActivityChart() {
+  const canvas = document.getElementById('activityChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (activityChart) activityChart.destroy();
+  const data = ACTIVITY[currentActivityView];
+  const colors = {"Nghĩa":"#4f8ef7","Tuyền":"#36d399","Châu":"#f7c948","Non-food":"#a78bfa"};
+  const datasets = Object.entries(data).map(([am, vals]) => ({
+    label: am,
+    data: vals,
+    backgroundColor: colors[am] + '55',
+    borderColor: colors[am],
+    borderWidth: 2,
+    borderRadius: 4
+  }));
+  activityChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: MONTHS, datasets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#7c8db5', font: { size: 11 }, padding: 10, boxWidth: 10, boxHeight: 10 } },
+        tooltip: {
+          backgroundColor: '#1e2336', borderColor: '#2a3050', borderWidth: 1,
+          titleColor: '#e8ecf4', bodyColor: '#7c8db5',
+          callbacks: { label: c => `${c.dataset.label}: ${c.raw != null ? c.raw : '—'} lần` }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#7c8db5', font: { size: 11 } }, grid: { color: 'rgba(42,48,80,.4)' } },
+        y: { ticks: { color: '#7c8db5', font: { size: 11 }, stepSize: 1 }, grid: { color: 'rgba(42,48,80,.4)' }, border: { dash: [4,4] }, min: 0 }
+      }
+    }
+  });
+}
+
+
+// ===================== DOWNLOAD HTML =====================
+function downloadHTML() {
+  // Get current HTML
+  let currentHTML = document.documentElement.outerHTML;
+
+  // Replace const RAW = {...}; with updated data
+  const rawStart = currentHTML.indexOf('const RAW = {');
+  const rawEnd = currentHTML.indexOf('const AM_COLORS');
+  if (rawStart < 0 || rawEnd < 0) {
+    alert('Không tìm thấy RAW data trong file!');
+    return;
+  }
+
+  const newRAW = 'const RAW = ' + JSON.stringify(RAW, null, 2) + ';';
+  currentHTML = currentHTML.slice(0, rawStart) + newRAW + currentHTML.slice(rawEnd);
+
+  // Download
+  const blob = new Blob([currentHTML], {type: 'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'index.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+Chart.register(datalabelsPlugin);
+renderAll();
+document.addEventListener('DOMContentLoaded', function() { buildActivityChart(); });
+
+// ===================== UPLOAD HANDLER =====================
+function handleExcelUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('uploadStatus');
+  status.textContent = 'Đang đọc file...';
+  status.className = 'upload-status';
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, {type:'array'});
+      const sheetName = workbook.SheetNames.find(s =>
+        s.toLowerCase().includes('raw') || s.toLowerCase().includes('data')
+      ) || workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(sheet, {defval: null, header: 1});
+
+      if (!rows.length) {
+        status.textContent = '❌ File trống';
+        status.className = 'upload-status err';
+        return;
+      }
+
+      const header = rows[0];
+      const dataRows = rows.slice(1);
+
+      // ---- Column indices (from header) ----
+      const colAM   = header.indexOf('AM');
+      const colName = header.indexOf('Tên khách');
+      const colProd = header.indexOf('Tên sản phẩm');
+      const colPL   = header.indexOf('Product line');
+
+      // RAW summary columns: Unnamed:23=AM, Unnamed:24=PL, Unnamed:25=Type, T01-T12
+      const rawAMcol   = header.indexOf('Unnamed: 23') >= 0 ? header.indexOf('Unnamed: 23') : 23;
+      const rawPLcol   = header.indexOf('Unnamed: 24') >= 0 ? header.indexOf('Unnamed: 24') : 24;
+      const rawTypecol = header.indexOf('Unnamed: 25') >= 0 ? header.indexOf('Unnamed: 25') : 25;
+      const rawT01col  = header.indexOf('T01') >= 0 ? header.indexOf('T01') : 26;
+
+      // ---- 1. Update CUSTOMERS (cột A-V) ----
+      CUSTOMERS.length = 0;
+      dataRows.forEach(row => {
+        const am = row[colAM];
+        const pl = row[colPL];
+        if (!am || !pl) return;
+        const obj = {'AM':am,'Tên khách':row[colName],'Tên sản phẩm':row[colProd],'Product line':pl};
+        header.forEach((h, i) => {
+          if (h && typeof h === 'string' && !h.startsWith('Unnamed') && row[i] != null) {
+            obj[h] = row[i];
+          }
+        });
+        CUSTOMERS.push(obj);
+      });
+
+      // ---- 2. Update RAW (cột summary) ----
+      const typeMap = {'KPI':'kpi','PO':'po','Actual':'actual','FC':'fc'};
+      const newData = {};
+
+      // Fill down AM and PL (they only appear on first row of each group)
+      let lastAM = null, lastPL = null;
+      dataRows.forEach(row => {
+        if (row[rawAMcol]) lastAM = row[rawAMcol];
+        if (row[rawPLcol]) lastPL = row[rawPLcol];
+        const type = row[rawTypecol];
+        if (!lastAM || !lastPL || !type || !typeMap[type]) return;
+
+        const am = lastAM, pl = lastPL;
+        if (!newData[am]) newData[am] = {};
+        if (!newData[am][pl]) newData[am][pl] = {
+          kpi:Array(12).fill(null), po:Array(12).fill(null),
+          actual:Array(12).fill(null), fc:Array(12).fill(null)
+        };
+
+        const field = typeMap[type];
+        for (let i = 0; i < 12; i++) {
+          const v = row[rawT01col + i];
+          if (v != null && v !== '' && !isNaN(v)) {
+            newData[am][pl][field][i] = +Number(v).toFixed(3);
+          }
+        }
+      });
+
+      // Merge vào RAW — chỉ update tháng có data, giữ nguyên phần còn lại
+      Object.keys(newData).forEach(am => {
+        if (!RAW[am]) RAW[am] = {};
+        Object.keys(newData[am]).forEach(pl => {
+          if (!RAW[am][pl]) RAW[am][pl] = {
+            kpi:Array(12).fill(null), po:Array(12).fill(null),
+            actual:Array(12).fill(null), fc:Array(12).fill(null),
+            cumKPI:Array(12).fill(null), cumActual:Array(12).fill(null)
+          };
+          ['kpi','po','actual','fc'].forEach(field => {
+            newData[am][pl][field].forEach((v, i) => {
+              if (v != null) RAW[am][pl][field][i] = v;
+            });
+          });
+          // Recalculate cumKPI
+          let cum = 0;
+          RAW[am][pl].cumKPI = RAW[am][pl].kpi.map(v => {
+            if (v != null) cum += v;
+            return cum > 0 ? +cum.toFixed(3) : null;
+          });
+        });
+      });
+
+      renderAll();
+      buildActivityChart();
+
+      status.textContent = `✅ Đã load ${CUSTOMERS.length} khách hàng · ${Object.keys(newData).length} AM · dashboard đã cập nhật`;
+      status.className = 'upload-status ok';
+
+    } catch(err) {
+      status.textContent = '❌ Lỗi: ' + err.message;
+      status.className = 'upload-status err';
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+</script>
+
+
+
+<!-- Activity Chart -->
+<div class="chart-card" style="margin-top:12px;margin-bottom:0">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div class="ct">Hoạt động phát triển khách hàng</div>
+    <div style="display:flex;gap:6px">
+      <button class="pl-tab active" id="act-btn-sample" onclick="setActivityView('sample',this)">Thử mẫu thành công</button>
+      <button class="pl-tab" id="act-btn-new" onclick="setActivityView('new',this)">Khách hàng mới</button>
+    </div>
+  </div>
+  <div class="cs">Số lần theo tháng · T1–T12/2026 · cập nhật trong mục ACTIVITY trong code</div>
+  <canvas id="activityChart" height="525" style="box-sizing: border-box; display: block; height: 350px; width: 1167px;" width="1750"></canvas>
+</div>
+
+
+</body><chatgpt-sidebar data-rendered="true" data-gpts-theme="light"></chatgpt-sidebar></html>
