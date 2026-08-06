@@ -1848,9 +1848,9 @@ function renderCustomerView() {
       {label:'PO',data:poArr,backgroundColor:'rgba(167,139,250,.25)',borderColor:'#a78bfa',borderWidth:2,borderRadius:4,order:3},
       {label:'Dự báo',data:fcArr,type:'line',borderColor:'#f7c948',backgroundColor:'rgba(247,201,72,.07)',borderWidth:2,borderDash:[4,3],pointRadius:3,tension:0.3,order:0}
     ]},
-    options:{responsive:true,interaction:{mode:'index',intersect:false},
+    options:{responsive:true,layout:{padding:{top:28}},interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,titleColor:'#e8ecf4',bodyColor:'#7c8db5',callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw,1):'—'} tấn`}}},
-      scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}
+      scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{grace:'8%',ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}
   });
 }
 
