@@ -156,11 +156,11 @@
 
 <!-- Main Tabs -->
 <div class="main-tabs">
-  <div class="main-tab active" onclick="switchTab('overview',this)">📊 Tổng quan</div>
-  <div class="main-tab" onclick="switchTab('customer',this)">👤 Khách hàng</div>
+  <div class="main-tab" onclick="switchTab('overview',this)">📊 Tổng quan</div>
+  <div class="main-tab active" onclick="switchTab('customer',this)">👤 Khách hàng</div>
 </div>
 
-<div class="tab-content active" id="tab-overview">
+<div class="tab-content" id="tab-overview">
 
 <div class="kpi-grid">
   <div class="kpi-card c1"><div class="kpi-lbl">KPI Cả năm</div><div class="kpi-val c1" id="card-full-kpi">35,4K</div><div class="kpi-note">tấn · kế hoạch 2026</div></div>
@@ -176,7 +176,7 @@
   <div class="chart-card">
     <div class="ct">KPI vs Thực hiện theo tháng</div>
     <div class="cs">Đơn vị: tấn · T1–T12/2026</div>
-    <canvas id="mainChart" height="612" style="box-sizing: border-box; display: block; height: 408px; width: 766px;" width="1149"></canvas>
+    <canvas id="mainChart" height="0" style="box-sizing: border-box; display: block; height: 0px; width: 0px;" width="0"></canvas>
     <div class="legend">
       <div class="li"><div class="ld" style="background:#fb6f84"></div>KPI tháng</div>
       <div class="li"><div class="ld" style="background:#36d399"></div>Thực hiện</div>
@@ -187,14 +187,14 @@
   <div class="chart-card">
     <div class="ct">Dự báo cuối năm vs KPI cả năm</div>
     <div class="cs" id="forecast-cs">Actual T1–T07 + FC T08–T12 so với KPI năm (tấn)</div>
-    <canvas id="forecastChart" height="361" style="box-sizing: border-box; display: block; height: 240px; width: 362px;" width="543"></canvas>
+    <canvas id="forecastChart" height="0" style="box-sizing: border-box; display: block; height: 0px; width: 0px;" width="0"></canvas>
   </div>
 </div>
 
 <div class="chart-card" style="margin-bottom:12px">
   <div class="ct">Lũy kế KPI vs Thực hiện</div>
   <div class="cs">Tích lũy từ đầu năm (tấn)</div>
-  <canvas id="cumulChart" height="525" style="box-sizing: border-box; display: block; height: 350px; width: 1167px;" width="1750"></canvas>
+  <canvas id="cumulChart" height="0" style="box-sizing: border-box; display: block; height: 0px; width: 0px;" width="0"></canvas>
 </div>
 
 <div class="tbl-card">
@@ -557,7 +557,7 @@
 </div>
 
 <!-- Tab Khách hàng -->
-<div class="tab-content" id="tab-customer">
+<div class="tab-content active" id="tab-customer">
   <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap">
     <div>
       <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.6px">Chọn khách hàng</label>
@@ -584,13 +584,13 @@
   </div>
   <div id="custContent" style="color:var(--muted);text-align:center;padding:40px">
     <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px;color:#4f8ef7">
-      Tổng hợp 4 khách hàng
+      DNP - Unilever
       <span style="font-size:12px;color:var(--muted);font-family:'Inter',sans-serif"> · Nghĩa, Châu · rHDPE</span>
     </div>
     <div class="cust-grid">
-      <div class="cust-stat"><div class="cust-stat-lbl">Tổng KPI cả năm</div><div class="cust-stat-val" style="color:#fb6f84">3.552 <span style="font-size:13px;color:var(--muted)">tấn</span></div></div>
-      <div class="cust-stat"><div class="cust-stat-lbl">Thực hiện T1–T07</div><div class="cust-stat-val" style="color:#36d399">1.940,4 <span style="font-size:13px;color:var(--muted)">tấn</span></div><div style="font-size:11px;margin-top:4px;color:var(--red)">54.6% KPI</div></div>
-      <div class="cust-stat"><div class="cust-stat-lbl">PO T08–T12</div><div class="cust-stat-val" style="color:#a78bfa">148,5 <span style="font-size:13px;color:var(--muted)">tấn</span></div></div>
+      <div class="cust-stat"><div class="cust-stat-lbl">Tổng KPI cả năm</div><div class="cust-stat-val" style="color:#fb6f84">120 <span style="font-size:13px;color:var(--muted)">tấn</span></div></div>
+      <div class="cust-stat"><div class="cust-stat-lbl">Thực hiện T1–T07</div><div class="cust-stat-val" style="color:#36d399">249,5 <span style="font-size:13px;color:var(--muted)">tấn</span></div><div style="font-size:11px;margin-top:4px;color:var(--green)">207.9% KPI</div></div>
+      <div class="cust-stat"><div class="cust-stat-lbl">PO T08–T12</div><div class="cust-stat-val" style="color:#a78bfa">38,5 <span style="font-size:13px;color:var(--muted)">tấn</span></div></div>
     </div>
     <div class="cust-chart-card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">KPI · Thực hiện · PO · Dự báo theo tháng</div>
@@ -614,8 +614,9 @@
           <th>T01</th><th>T02</th><th>T03</th><th>T04</th><th>T05</th><th>T06</th>
           <th>T07</th><th>T08</th><th>T09</th><th>T10</th><th>T11</th><th>T12</th>
           <th>Tổng TH</th><th>Tổng KPI</th><th>% Đạt</th>
+          <th>Tháng có đơn</th><th>Tháng đứt đơn</th><th>Gần nhất có đơn</th>
         </tr></thead>
-        <tbody><tr><td style="font-weight:600">DTP - Unilever</td><td style="color:var(--muted);font-size:11px">MBF01</td><td style="color:var(--green)">165</td><td style="color:var(--green)">176</td><td style="color:var(--green)">231</td><td style="color:var(--green)">148,5</td><td style="color:var(--green)">225,5</td><td style="color:var(--green)">159,5</td><td style="color:var(--green)">88</td><td style="color:var(--purple)">77</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">1.193,5</td><td style="color:var(--muted)">2.640</td><td style="font-weight:600;color:var(--red)">45%</td></tr><tr><td style="font-weight:600">DTP - Unilever</td><td style="color:var(--muted);font-size:11px">PCF01</td><td style="color:var(--green)">11</td><td style="color:var(--green)">22</td><td style="color:var(--green)">33</td><td style="color:var(--green)">60,5</td><td style="color:var(--green)">93,5</td><td style="color:var(--green)">44</td><td style="color:var(--green)">71,5</td><td style="color:var(--purple)">33</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">335,5</td><td style="color:var(--muted)">528</td><td style="font-weight:600;color:var(--red)">64%</td></tr><tr><td style="font-weight:600">DTP - Unilever</td><td style="color:var(--muted);font-size:11px">HCBF-Whi-U</td><td style="color:var(--green)">61</td><td style="color:var(--green)">6</td><td style="color:var(--green)">66</td><td style="color:var(--green)">28,9</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">161,9</td><td style="color:var(--muted)">264</td><td style="font-weight:600;color:var(--red)">61%</td></tr><tr><td style="font-weight:600">DTP - Unilever</td><td style="color:var(--muted);font-size:11px">HCBF-Yel-U</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">0</td><td style="color:var(--muted)">0</td><td style="font-weight:600;color:var(--red)">—</td></tr><tr><td style="font-weight:600">DNP - Unilever</td><td style="color:var(--muted);font-size:11px">PCF01</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--green)">15</td><td style="color:var(--muted)">0</td><td style="color:var(--green)">13,8</td><td style="color:var(--green)">66</td><td style="color:var(--green)">24,8</td><td style="color:var(--purple)">38,5</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">119,5</td><td style="color:var(--muted)">120</td><td style="font-weight:600;color:var(--yellow)">100%</td></tr><tr><td style="font-weight:600">DNP - Unilever</td><td style="color:var(--muted);font-size:11px">MBF01</td><td style="color:var(--green)">47</td><td style="color:var(--green)">25</td><td style="color:var(--green)">47</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--green)">11</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">130</td><td style="color:var(--muted)">0</td><td style="font-weight:600;color:var(--red)">—</td></tr><tr class="total-row"><td colspan="2">TỔNG</td><td style="font-weight:600;color:var(--green)">284</td><td style="font-weight:600;color:var(--green)">229</td><td style="font-weight:600;color:var(--green)">392</td><td style="font-weight:600;color:var(--green)">237,9</td><td style="font-weight:600;color:var(--green)">332,8</td><td style="font-weight:600;color:var(--green)">269,5</td><td style="font-weight:600;color:var(--green)">195,3</td><td style="font-weight:600;color:var(--purple)">148,5</td><td style="font-weight:600;color:var(--muted)">—</td><td style="font-weight:600;color:var(--muted)">—</td><td style="font-weight:600;color:var(--muted)">—</td><td style="font-weight:600;color:var(--muted)">—</td><td style="color:var(--green)">1.940,4</td><td style="color:var(--muted)">3.552</td><td style="color:var(--red)">55%</td></tr></tbody>
+        <tbody><tr><td style="font-weight:600">DNP - Unilever</td><td style="color:var(--muted);font-size:11px">PCF01</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--green)">15</td><td style="color:var(--muted)">0</td><td style="color:var(--green)">13,8</td><td style="color:var(--green)">66</td><td style="color:var(--green)">24,8</td><td style="color:var(--purple)">38,5</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">119,5</td><td style="color:var(--muted)">120</td><td style="font-weight:600;color:var(--yellow)">100%</td><td style="font-weight:600;color:var(--green)">5</td><td style="font-weight:600;color:var(--red)">1</td><td style="font-weight:600;color:#a78bfa">T08</td></tr><tr><td style="font-weight:600">DNP - Unilever</td><td style="color:var(--muted);font-size:11px">MBF01</td><td style="color:var(--green)">47</td><td style="color:var(--green)">25</td><td style="color:var(--green)">47</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--muted)">0</td><td style="color:var(--green)">11</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="color:var(--muted)">—</td><td style="font-weight:600;color:var(--green)">130</td><td style="color:var(--muted)">0</td><td style="font-weight:600;color:var(--red)">—</td><td style="font-weight:600;color:var(--green)">4</td><td style="font-weight:600;color:var(--red)">3</td><td style="font-weight:600;color:#a78bfa">T07</td></tr><tr class="total-row"><td colspan="2">TỔNG</td><td style="font-weight:600;color:var(--green)">47</td><td style="font-weight:600;color:var(--green)">25</td><td style="font-weight:600;color:var(--green)">62</td><td style="font-weight:600;color:var(--muted)">0</td><td style="font-weight:600;color:var(--green)">13,8</td><td style="font-weight:600;color:var(--green)">66</td><td style="font-weight:600;color:var(--green)">35,8</td><td style="font-weight:600;color:var(--purple)">38,5</td><td style="font-weight:600;color:var(--muted)">—</td><td style="font-weight:600;color:var(--muted)">—</td><td style="font-weight:600;color:var(--muted)">—</td><td style="font-weight:600;color:var(--muted)">—</td><td style="color:var(--green)">249,5</td><td style="color:var(--muted)">120</td><td style="color:var(--green)">208%</td><td style="color:var(--green)">7</td><td style="color:var(--red)">1</td><td style="color:#a78bfa">T08</td></tr></tbody>
       </table>
     </div></div>
 </div>
@@ -1404,7 +1405,7 @@ function buildForecastChart(am) {
   window._forecastChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
     {label:'KPI cả năm',data:kpiData,backgroundColor:'rgba(251,111,132,.2)',borderColor:'#fb6f84',borderWidth:2,borderRadius:5},
     {label:'Dự báo cuối năm',data:forecastData,backgroundColor:'rgba(247,201,72,.2)',borderColor:'#f7c948',borderWidth:2,borderRadius:5}
-  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw,0)} tấn`}}},scales:{x:{ticks:{color:'#e8ecf4',font:{size:12,weight:'600'}},grid:{display:false}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+  ]},options:{responsive:true,layout:{padding:{top:34}},interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw,0)} tấn`}}},scales:{x:{ticks:{color:'#e8ecf4',font:{size:12,weight:'600'}},grid:{display:false}},y:{grace:'6%',ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
 }
 
 
@@ -1498,26 +1499,25 @@ const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
     });
     return;
   }
-  if(isCumulChart){
-    chart.data.datasets.forEach((dataset,i)=>{
-      const meta=chart.getDatasetMeta(i);
-      meta.data.forEach((el,idx)=>{
-        const v=dataset.data[idx];
-        if(v==null||v===0)return;
-        const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
-        ctx.save();ctx.font='9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-6);ctx.restore();
-      });
-    });
-    const thDataset=chart.data.datasets.find(d=>d.label==='Lũy kế TH');
-    const kpiDataset=chart.data.datasets.find(d=>d.label==='Lũy kế KPI');
-    if(!thDataset||!kpiDataset)return;
-    const thMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(thDataset));
-    thMeta.data.forEach((el,idx)=>{
-      const tv=thDataset.data[idx],kv=kpiDataset.data[idx];
-      if(tv==null||kv==null||kv===0)return;
-      const pct=Math.round(tv/kv*100)+'%';
-      ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=tv>=kv?'#36d399':'#fb6f84';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(pct,el.x,el.y-18);ctx.restore();
-    });
+if(isCumulChart){
+    const kpiDs=chart.data.datasets.find(d=>d.label==='Lũy kế KPI');
+    const thDs =chart.data.datasets.find(d=>d.label==='Lũy kế TH');
+    const fcDs =chart.data.datasets.find(d=>d.label==='Lũy kế FC');
+    const fmtK=v=> v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
+    const kpiMeta=kpiDs?chart.getDatasetMeta(chart.data.datasets.indexOf(kpiDs)):null;
+    const thMeta =thDs ?chart.getDatasetMeta(chart.data.datasets.indexOf(thDs )):null;
+    if(kpiDs)kpiMeta.data.forEach((el,idx)=>{const v=kpiDs.data[idx];if(v==null||v===0)return;
+      ctx.save();ctx.font='9px Inter';ctx.fillStyle='#fb6f84';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(fmtK(v),el.x,el.y-9);ctx.restore();});
+    if(thDs)thMeta.data.forEach((el,idx)=>{const v=thDs.data[idx];if(v==null||v===0)return;
+      ctx.save();ctx.font='9px Inter';ctx.fillStyle='#36d399';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(fmtK(v),el.x,el.y+7);ctx.restore();});
+    if(fcDs){const fcMeta=chart.getDatasetMeta(chart.data.datasets.indexOf(fcDs));
+      fcMeta.data.forEach((el,idx)=>{const v=fcDs.data[idx];if(v==null||v===0)return;
+        if(thDs&&thDs.data[idx]!=null&&Math.abs(v-thDs.data[idx])<0.5)return;
+        ctx.save();ctx.font='9px Inter';ctx.fillStyle='#f7c948';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(fmtK(v),el.x,el.y-9);ctx.restore();});}
+    if(kpiDs&&thDs)kpiMeta.data.forEach((el,idx)=>{const kv=kpiDs.data[idx],tv=thDs.data[idx];
+      if(kv==null||tv==null||kv===0)return;const pct=Math.round(tv/kv*100)+'%';
+      ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=tv>=kv?'#36d399':'#fb6f84';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(pct,el.x,el.y-22);ctx.restore();});
+    return;
   }
 }};
 
@@ -1567,6 +1567,7 @@ function buildActivityChart() {
     data: { labels: MONTHS, datasets },
     options: {
       responsive: true,
+      layout: { padding: { top: 24 } },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { position: 'bottom', labels: { color: '#7c8db5', font: { size: 11 }, padding: 10, boxWidth: 10, boxHeight: 10 } },
@@ -1750,37 +1751,56 @@ function renderCustomerView() {
     products.forEach((prod, pIdx) => {
       const prow = crow.filter(r=>r['Tên sản phẩm']===prod);
       let rowTH=0, rowKPI=0, cells='';
+      const ord=[];   // true nếu tháng đó có đơn (giá trị hiển thị > 0)
       MONTH_NAMES_EN.forEach(m => {
+        let v=null;
         if(isActualMonth(m)){
-          let v=null; prow.forEach(r=>{ const rv=r['Thực hiện - '+m]; if(rv!=null) v=(v||0)+rv; });
+          prow.forEach(r=>{ const rv=r['Thực hiện - '+m]; if(rv!=null) v=(v||0)+rv; });
           if(v!=null) rowTH+=v;
           cells += '<td style="color:'+(v!=null&&v>0?'var(--green)':'var(--muted)')+'">'+( v!=null?v.toLocaleString('vi-VN',{maximumFractionDigits:1}):'—')+'</td>';
         } else {
-          let v=null; prow.forEach(r=>{ const rv=r['PO - '+m]; if(rv!=null&&rv>0) v=(v||0)+rv; });
+          prow.forEach(r=>{ const rv=r['PO - '+m]; if(rv!=null&&rv>0) v=(v||0)+rv; });
           cells += '<td style="color:'+(v!=null?'var(--purple)':'var(--muted)')+'">'+( v!=null?v.toLocaleString('vi-VN',{maximumFractionDigits:1}):'—')+'</td>';
         }
+        ord.push(v!=null && v>0);
       });
       MONTH_NAMES_EN.forEach(m=>{ prow.forEach(r=>{ rowKPI+=(r['KPI - '+m]||0); }); });
       totKPI+=rowKPI; totTH+=rowTH;
       const rPct=rowKPI>0?(rowTH/rowKPI*100).toFixed(0)+'%':'—';
       const rColor=rowKPI>0&&rowTH/rowKPI>=1?'var(--green)':rowKPI>0&&rowTH/rowKPI>=0.7?'var(--yellow)':'var(--red)';
       const nameCell='<td style="font-weight:600">'+cname+'</td>';
-      tableRows+='<tr>'+nameCell+'<td style="color:var(--muted);font-size:11px">'+prod+'</td>'+cells+'<td style="font-weight:600;color:var(--green)">'+rowTH.toLocaleString('vi-VN',{maximumFractionDigits:1})+'</td><td style="color:var(--muted)">'+rowKPI.toLocaleString('vi-VN',{maximumFractionDigits:0})+'</td><td style="font-weight:600;color:'+rColor+'">'+rPct+'</td></tr>';
+      // ---- 3 cột mới ----
+      const monthsOrder=ord.filter(Boolean).length;
+      const firstI=ord.indexOf(true), lastI=ord.lastIndexOf(true);
+      let gap=0; if(firstI>=0){ for(let i=firstI;i<=lastI;i++) if(!ord[i]) gap++; }
+      const lastLbl=lastI>=0?MONTH_LABELS_VI[lastI]:'—';
+      const statCells='<td style="font-weight:600;color:var(--green)">'+monthsOrder+'</td>'
+        +'<td style="font-weight:600;color:'+(gap>0?'var(--red)':'var(--muted)')+'">'+gap+'</td>'
+        +'<td style="font-weight:600;color:#a78bfa">'+lastLbl+'</td>';
+      tableRows+='<tr>'+nameCell+'<td style="color:var(--muted);font-size:11px">'+prod+'</td>'+cells+'<td style="font-weight:600;color:var(--green)">'+rowTH.toLocaleString('vi-VN',{maximumFractionDigits:1})+'</td><td style="color:var(--muted)">'+rowKPI.toLocaleString('vi-VN',{maximumFractionDigits:0})+'</td><td style="font-weight:600;color:'+rColor+'">'+rPct+'</td>'+statCells+'</tr>';
     });
   });
   let totalCells='';
+  const totOrd=[];
   MONTH_NAMES_EN.forEach(m=>{
+    let v=null;
     if(isActualMonth(m)){
-      let v=null; rows.forEach(r=>{ const rv=r['Thực hiện - '+m]; if(rv!=null) v=(v||0)+rv; });
+      rows.forEach(r=>{ const rv=r['Thực hiện - '+m]; if(rv!=null) v=(v||0)+rv; });
       totalCells+='<td style="font-weight:600;color:'+(v!=null&&v>0?'var(--green)':'var(--muted)')+'">'+( v!=null?v.toLocaleString('vi-VN',{maximumFractionDigits:1}):'—')+'</td>';
     } else {
-      let v=null; rows.forEach(r=>{ const rv=r['PO - '+m]; if(rv!=null&&rv>0) v=(v||0)+rv; });
+      rows.forEach(r=>{ const rv=r['PO - '+m]; if(rv!=null&&rv>0) v=(v||0)+rv; });
       totalCells+='<td style="font-weight:600;color:'+(v!=null?'var(--purple)':'var(--muted)')+'">'+( v!=null?v.toLocaleString('vi-VN',{maximumFractionDigits:1}):'—')+'</td>';
     }
+    totOrd.push(v!=null && v>0);
   });
+  const totMonthsOrder=totOrd.filter(Boolean).length;
+  const totFirstI=totOrd.indexOf(true), totLastI=totOrd.lastIndexOf(true);
+  let totGap=0; if(totFirstI>=0){ for(let i=totFirstI;i<=totLastI;i++) if(!totOrd[i]) totGap++; }
+  const totLastLbl=totLastI>=0?MONTH_LABELS_VI[totLastI]:'—';
+  const totStatCells='<td style="color:var(--green)">'+totMonthsOrder+'</td><td style="color:'+(totGap>0?'var(--red)':'var(--muted)')+'">'+totGap+'</td><td style="color:#a78bfa">'+totLastLbl+'</td>';
+
   const tPct2=totKPI>0?(totTH/totKPI*100).toFixed(0)+'%':'—';
   const tColor2=totKPI>0&&totTH/totKPI>=1?'var(--green)':totKPI>0&&totTH/totKPI>=0.7?'var(--yellow)':'var(--red)';
-
   document.getElementById('custContent').innerHTML = `
     <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px;color:${amColor}">
       ${selectedNames.length===1?selectedNames[0]:'Tổng hợp '+selectedNames.length+' khách hàng'}
@@ -1813,8 +1833,9 @@ function renderCustomerView() {
           <th>T01</th><th>T02</th><th>T03</th><th>T04</th><th>T05</th><th>T06</th>
           <th>T07</th><th>T08</th><th>T09</th><th>T10</th><th>T11</th><th>T12</th>
           <th>Tổng TH</th><th>Tổng KPI</th><th>% Đạt</th>
+          <th>Tháng có đơn</th><th>Tháng đứt đơn</th><th>Gần nhất có đơn</th>
         </tr></thead>
-        <tbody>${tableRows}<tr class="total-row"><td colspan="2">TỔNG</td>${totalCells}<td style="color:var(--green)">${totTH.toLocaleString('vi-VN',{maximumFractionDigits:1})}</td><td style="color:var(--muted)">${totKPI.toLocaleString('vi-VN',{maximumFractionDigits:0})}</td><td style="color:${tColor2}">${tPct2}</td></tr></tbody>
+        <tbody>${tableRows}<tr class="total-row"><td colspan="2">TỔNG</td>${totalCells}<td style="color:var(--green)">${totTH.toLocaleString('vi-VN',{maximumFractionDigits:1})}</td><td style="color:var(--muted)">${totKPI.toLocaleString('vi-VN',{maximumFractionDigits:0})}</td><td style="color:${tColor2}">${tPct2}</td>${totStatCells}</tr></tbody>
       </table>
     </div>`;
 
@@ -1971,7 +1992,7 @@ function handleExcelUpload(event) {
 
 
 <!-- Activity Chart -->
-<div id="activity-section" class="chart-card" style="margin-top: 12px; margin-bottom: 0px;">
+<div id="activity-section" class="chart-card" style="margin-top: 12px; margin-bottom: 0px; display: none;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div class="ct">Hoạt động phát triển khách hàng</div>
     <div style="display:flex;gap:6px">
@@ -1980,7 +2001,7 @@ function handleExcelUpload(event) {
     </div>
   </div>
   <div class="cs">Số lần theo tháng · T1–T12/2026 · cập nhật trong mục ACTIVITY trong code</div>
-  <canvas id="activityChart" height="525" style="box-sizing: border-box; display: block; height: 350px; width: 1167px;" width="1750"></canvas>
+  <canvas id="activityChart" height="0" style="box-sizing: border-box; display: block; height: 0px; width: 0px;" width="0"></canvas>
 </div>
 
 
