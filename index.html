@@ -7,9 +7,9 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap');
   :root {
-    --bg:#0f1117; --surface:#181c27; --card:#1e2336; --border:#2a3050;
-    --accent:#4f8ef7; --green:#36d399; --yellow:#f7c948; --red:#fb6f84; --purple:#a78bfa;
-    --text:#e8ecf4; --muted:#7c8db5; --dim:#3a4568;
+    --bg:#f4f6fb; --surface:#ffffff; --card:#ffffff; --border:#e2e8f0;
+    --accent:#4f8ef7; --green:#16a34a; --yellow:#d99e00; --red:#e5484d; --purple:#8b5cf6;
+    --text:#1e293b; --muted:#64748b; --dim:#94a3b8;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px;}
@@ -27,7 +27,7 @@
   .am-tab.active.nonfood{background:#a78bfa;}
   .pl-tab{padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
   .pl-tab:hover{border-color:var(--dim);color:var(--text);}
-  .pl-tab.active{background:var(--dim);border-color:var(--dim);color:#fff;}
+  .pl-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
   .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
   .kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
@@ -51,10 +51,10 @@
   table{width:100%;border-collapse:collapse;font-size:12px;}
   th{text-align:center;padding:7px 8px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
   th:first-child,th:nth-child(2){text-align:left;}
-  td{text-align:center;padding:7px 8px;border-bottom:1px solid rgba(42,48,80,.4);white-space:nowrap;}
+  td{text-align:center;padding:7px 8px;border-bottom:1px solid rgba(100,116,139,.18);white-space:nowrap;}
   td:first-child,td:nth-child(2){text-align:left;}
   tr:last-child td{border-bottom:none;}
-  tr:hover td{background:rgba(255,255,255,.02);}
+  tr:hover td{background:rgba(15,23,42,.03);}
   .chip{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:600;}
   .chip.g{background:rgba(54,211,153,.12);color:var(--green);}
   .chip.y{background:rgba(247,201,72,.12);color:var(--yellow);}
@@ -96,7 +96,7 @@
   .cust-select option{background:var(--card);}
   .cust-checkbox-list{background:var(--card);border:1px solid var(--border);border-radius:0 0 8px 8px;border-top:none;max-height:180px;overflow-y:auto;min-width:280px;}
   .cust-checkbox-item{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;transition:background .1s;font-size:12px;}
-  .cust-checkbox-item:hover{background:rgba(255,255,255,.04);}
+  .cust-checkbox-item:hover{background:rgba(15,23,42,.04);}
   .cust-checkbox-item input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
   .cust-search{width:100%;padding:7px 12px;border:none;border-bottom:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;border-radius:8px 8px 0 0;outline:none;box-sizing:border-box;}
   .cust-search::placeholder{color:var(--muted);}
@@ -108,10 +108,10 @@
   .cust-detail-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px;}
   .cust-detail-table th{text-align:center;padding:6px 8px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface);}
   .cust-detail-table th:first-child{text-align:left;}
-  .cust-detail-table td{text-align:center;padding:5px 8px;border-bottom:1px solid rgba(42,48,80,.3);white-space:nowrap;}
+  .cust-detail-table td{text-align:center;padding:5px 8px;border-bottom:1px solid rgba(100,116,139,.15);white-space:nowrap;}
   .cust-detail-table td:first-child{text-align:left;font-weight:500;}
   .cust-detail-table tr:last-child td{border-bottom:none;}
-  .cust-detail-table tr:hover td{background:rgba(255,255,255,.02);}
+  .cust-detail-table tr:hover td{background:rgba(15,23,42,.03);}
   .cust-detail-table .total-row td{font-weight:700;border-top:1px solid var(--border);}
 
   .filter-dropdown{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text);font-size:12px;cursor:pointer;min-width:160px;}
@@ -195,6 +195,19 @@
   <div class="ct">Lũy kế KPI vs Thực hiện</div>
   <div class="cs">Tích lũy từ đầu năm (tấn)</div>
   <canvas id="cumulChart"></canvas>
+</div>
+
+<div class="charts-row" style="grid-template-columns:1fr 1fr">
+  <div class="chart-card">
+    <div class="ct">Sản lượng theo khách hàng</div>
+    <div class="cs">Thực hiện (tấn) · lọc theo AM / Product line đang chọn</div>
+    <div style="height:300px;position:relative"><canvas id="custDonut"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="ct">Sản lượng theo sản phẩm</div>
+    <div class="cs">Thực hiện (tấn) · theo nhóm SP</div>
+    <div style="height:300px;position:relative"><canvas id="prodDonut"></canvas></div>
+  </div>
 </div>
 
 <div class="tbl-card">
@@ -546,7 +559,7 @@
             <th>KPI</th><th>PO</th><th>Dự báo</th><th>% PO/KPI</th>
           </tr>
         </thead>
-        <tbody id="modalBody"><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - SPFV</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">308</td><td style="color:#a78bfa;font-weight:600">264</td><td style="color:#f7c948">308</td><td><span class="chip y">86%</span></td></tr><tr><td style="text-align:left;font-weight:500">Premium Water</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS03G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">264</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">550</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - Srithai BD</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">110</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">CPSX Nhựa Duy Tân</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">88</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">Plascene - US</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;69</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">66</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">66</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - NNTN</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">55</td><td style="color:#a78bfa;font-weight:600">110</td><td style="color:#f7c948">110</td><td><span class="chip g">200%</span></td></tr><tr><td style="text-align:left;font-weight:500">Lavie</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">53</td><td style="color:#a78bfa;font-weight:600">44</td><td style="color:#f7c948">44</td><td><span class="chip y">83%</span></td></tr><tr><td style="text-align:left;font-weight:500">New Developments</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS03G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">50</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">New Developments</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">50</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Plascene</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;69</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">44</td><td style="color:#a78bfa;font-weight:600">55</td><td style="color:#f7c948">88</td><td><span class="chip g">125%</span></td></tr><tr><td style="text-align:left;font-weight:500">POLYCAD</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">22</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Plascene</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">12</td><td style="color:#f7c948">45</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">New Developments</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Wiese</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">MCP/ Resinex</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Lavie</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G-L</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Lavie</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01 mix WSS01G-L</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Khác</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;70</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Olam</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;70</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">22</td><td style="color:#f7c948">22</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Soda stream</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Collective Polymers - Sky Blue Water</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Muji</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Mida</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">11</td><td style="color:#f7c948">18</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Ngọc Nghĩa</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Miss Plastic</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - Hon Chuan</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">NNG - CC</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">POLYCORE</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS03G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">NHỰA ÂU LẠC</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">NNG - TN</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr></tbody>
+        <tbody id="modalBody"><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - SPFV</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">308</td><td style="color:#a78bfa;font-weight:600">264</td><td style="color:#f7c948">308</td><td><span class="chip y">86%</span></td></tr><tr><td style="text-align:left;font-weight:500">Premium Water</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS03G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">264</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">550</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - Srithai BD</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">110</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">CPSX Nhựa Duy Tân</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">88</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">Plascene - US</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;69</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">66</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">66</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - NNTN</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">55</td><td style="color:#a78bfa;font-weight:600">110</td><td style="color:#f7c948">110</td><td><span class="chip g">200%</span></td></tr><tr><td style="text-align:left;font-weight:500">Lavie</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">53</td><td style="color:#a78bfa;font-weight:600">44</td><td style="color:#f7c948">44</td><td><span class="chip y">83%</span></td></tr><tr><td style="text-align:left;font-weight:500">New Developments</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS03G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">50</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">New Developments</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">50</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Plascene</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;69</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">44</td><td style="color:#a78bfa;font-weight:600">55</td><td style="color:#f7c948">88</td><td><span class="chip g">125%</span></td></tr><tr><td style="text-align:left;font-weight:500">POLYCAD</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--red);font-weight:600">22</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip r">0%</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Plascene</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">12</td><td style="color:#f7c948">45</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">New Developments</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Wiese</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">MCP/ Resinex</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Lavie</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G-L</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Lavie</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01 mix WSS01G-L</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Khác</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;70</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Olam</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G L&gt;70</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">22</td><td style="color:#f7c948">22</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Soda stream</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Collective Polymers - Sky Blue Water</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">DTP - Muji</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Mida</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">11</td><td style="color:#f7c948">18</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Ngọc Nghĩa</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Miss Plastic</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">Suntory Pepsico Berverage CSD - Hon Chuan</td><td style="text-align:left;color:var(--muted);font-size:11px">iSS01084G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">NNG - CC</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">POLYCORE</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS03G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">NHỰA ÂU LẠC</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr><tr><td style="text-align:left;font-weight:500">NNG - TN</td><td style="text-align:left;color:var(--muted);font-size:11px">WSS01G</td><td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:#4f8ef7">rPET</span></td><td style="color:var(--muted);font-weight:400">—</td><td style="color:#a78bfa;font-weight:600">0</td><td style="color:#f7c948">0</td><td><span class="chip na">—</span></td></tr></tbody>
       </table>
     </div>
   </div>
@@ -665,11 +678,11 @@ function openDrill(am, pl, monthIdx) {
     const po  = r['PO - '+monthName];
     const fc  = r['Dự báo - '+monthName];
     const pct = kpi>0&&po!=null ? po/kpi : null;
-    const plColor = {'rPET':'#4f8ef7','rHDPE':'#36d399','Non-food':'#a78bfa'}[r['Product line']]||'#7c8db5';
+    const plColor = {'rPET':'#4f8ef7','rHDPE':'#36d399','Non-food':'#a78bfa'}[r['Product line']]||'#64748b';
     tbody.innerHTML += '<tr>'
       +'<td style="text-align:left;font-weight:500">'+(r['Tên khách']||'—')+'</td>'
       +'<td style="text-align:left;color:var(--muted);font-size:11px">'+(r['Tên sản phẩm']||'—')+'</td>'
-      +'<td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.06);color:'+plColor+'">'+(r['Product line']||'—')+'</span></td>'
+      +'<td style="text-align:left"><span style="font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(15,23,42,.05);color:'+plColor+'">'+(r['Product line']||'—')+'</span></td>'
       +'<td style="color:'+(kpi!=null&&kpi>0?'var(--red)':'var(--muted)')+';font-weight:'+(kpi!=null&&kpi>0?'600':'400')+'">'+(kpi!=null?fmt(kpi,0):'—')+'</td>'
       +'<td style="color:#a78bfa;font-weight:600">'+(po!=null?fmt(po,0):'—')+'</td>'
       +'<td style="color:#f7c948">'+(fc!=null?fmt(fc,0):'—')+'</td>'
@@ -1276,7 +1289,7 @@ function buildMainChart(am) {
     {label:'Thực hiện',data:agg.actual,backgroundColor:'rgba(54,211,153,.25)',borderColor:'#36d399',borderWidth:2,borderRadius:4,order:2},
     {label:'PO (đơn chốt)',data:agg.po,backgroundColor:'rgba(167,139,250,.25)',borderColor:'#a78bfa',borderWidth:2,borderRadius:4,order:3},
     {label:'Dự báo',data:agg.fc,type:'line',borderColor:'#f7c948',backgroundColor:'rgba(247,201,72,.07)',borderWidth:2,borderDash:[4,3],pointRadius:3,tension:0.3,order:0}
-  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,titleColor:'#e8ecf4',bodyColor:'#7c8db5',callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw):'—'} tấn`}}},scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,titleColor:'#1e293b',bodyColor:'#64748b',callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw):'—'} tấn`}}},scales:{x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(100,116,139,.18)'}},y:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(100,116,139,.18)'},border:{dash:[4,4]}}}}});
 }
 
 function buildCumulChart(am) {
@@ -1295,7 +1308,7 @@ function buildCumulChart(am) {
     {label:'Lũy kế KPI',data:agg.cumKPI,borderColor:'#fb6f84',backgroundColor:'rgba(251,111,132,.07)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#fb6f84',borderWidth:2},
     {label:'Lũy kế TH',data:agg.cumAct,borderColor:'#36d399',backgroundColor:'rgba(54,211,153,.1)',fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'#36d399',borderWidth:2},
     {label:'Lũy kế FC',data:cumFC,borderColor:'#f7c948',backgroundColor:'transparent',fill:false,tension:0.4,pointRadius:3,pointBackgroundColor:'#f7c948',borderWidth:2,borderDash:[5,4]}
-  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw,0):'—'} tấn`}}},scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#64748b',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw,0):'—'} tấn`}}},scales:{x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(100,116,139,.18)'}},y:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(100,116,139,.18)'},border:{dash:[4,4]}}}}});
 }
 
 function buildMonthCell(d,idx,highlight='',am,pl,latestIdx) {
@@ -1405,7 +1418,7 @@ function buildForecastChart(am) {
   window._forecastChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
     {label:'KPI cả năm',data:kpiData,backgroundColor:'rgba(251,111,132,.2)',borderColor:'#fb6f84',borderWidth:2,borderRadius:5},
     {label:'Dự báo cuối năm',data:forecastData,backgroundColor:'rgba(247,201,72,.2)',borderColor:'#f7c948',borderWidth:2,borderRadius:5}
-  ]},options:{responsive:true,layout:{padding:{top:34}},interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#7c8db5',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw,0)} tấn`}}},scales:{x:{ticks:{color:'#e8ecf4',font:{size:12,weight:'600'}},grid:{display:false}},y:{grace:'6%',ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}});
+  ]},options:{responsive:true,layout:{padding:{top:34}},interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#64748b',font:{size:11},padding:10,boxWidth:10,boxHeight:10}},tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw,0)} tấn`}}},scales:{x:{ticks:{color:'#1e293b',font:{size:12,weight:'600'}},grid:{display:false}},y:{grace:'6%',ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(100,116,139,.18)'},border:{dash:[4,4]}}}}});
 }
 
 
@@ -1416,7 +1429,80 @@ function drillClick(el) {
 function setAM(am,el){currentAM=am;document.querySelectorAll('.am-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();
 buildActivityChart();}
 function setPL(pl,el){currentPL=pl;document.querySelectorAll('.pl-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
-function renderAll(){updateCards(currentAM);buildMainChart(currentAM);buildCumulChart(currentAM);buildTable(currentAM);buildForecastChart(currentAM);}
+// ===================== DONUT: sản lượng theo KH / theo SP =====================
+let custDonutChart=null, prodDonutChart=null;
+const _DONUT_MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const _DONUT_COLORS=['#4f8ef7','#36d399','#a78bfa','#f7c948','#fb6f84','#22d3ee','#f59e0b','#c084fc','#1e293b'];
+const _PL_COLORS={'rPET':'#4f8ef7','rHDPE':'#36d399','Non-food':'#a78bfa'};
+
+// Lọc CUSTOMERS theo tab AM và Product line đang chọn (khớp với phần Tổng quan)
+function _custInScope(){
+  return CUSTOMERS.filter(c=>{
+    if(currentAM!=='all'){
+      if(currentAM==='Non-food'){ if(c['Product line']!=='Non-food') return false; }
+      else if(c['AM']!==currentAM) return false;
+    }
+    if(currentPL!=='all' && c['Product line']!==currentPL) return false;
+    return true;
+  });
+}
+// Sản lượng = tổng "Thực hiện" 12 tháng (chỉ tháng đã có cột Thực hiện)
+function _actualVol(c){ let s=0; _DONUT_MONTHS.forEach(m=>{ const v=c['Thực hiện - '+m]; if(v!=null) s+=v; }); return s; }
+function _fmtK(v){ return v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0}); }
+
+function _makeDonut(canvasId,prev,labels,data,colors,total){
+  const el=document.getElementById(canvasId); if(!el) return prev;
+  const ctx=el.getContext('2d'); if(prev)prev.destroy();
+  return new Chart(ctx,{type:'doughnut',
+    data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#ffffff',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{
+        _centerText:{value:_fmtK(total),label:'tấn'},
+        legend:{position:'bottom',labels:{color:'#64748b',font:{size:10},padding:8,boxWidth:10,boxHeight:10}},
+        tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,titleColor:'#1e293b',bodyColor:'#64748b',
+          callbacks:{label:c=>{const v=c.parsed;const pct=total>0?(v/total*100).toFixed(1):0;return ` ${c.label}: ${v.toLocaleString('vi-VN',{maximumFractionDigits:1})} tấn (${pct}%)`;}}}
+      }}});
+}
+
+function buildCustomerDonut(){
+  if(!document.getElementById('custDonut'))return;
+  const map={};
+  _custInScope().forEach(c=>{const n=c['Tên khách']||'(không tên)';const v=_actualVol(c);if(v>0)map[n]=(map[n]||0)+v;});
+  let arr=Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  const TOPN=8; let labels,data;
+  if(arr.length>TOPN){
+    const top=arr.slice(0,TOPN), rest=arr.slice(TOPN).reduce((s,x)=>s+x[1],0);
+    labels=top.map(x=>x[0]).concat(['Khác']); data=top.map(x=>x[1]).concat([rest]);
+  }else{ labels=arr.map(x=>x[0]); data=arr.map(x=>x[1]); }
+  const total=data.reduce((s,v)=>s+v,0);
+  const colors=labels.map((_,i)=>_DONUT_COLORS[i%_DONUT_COLORS.length]);
+  custDonutChart=_makeDonut('custDonut',custDonutChart,labels,data,colors,total);
+}
+
+function buildProductDonut(){
+  if(!document.getElementById('prodDonut'))return;
+  const order=['rPET','rHDPE','Non-food']; const map={};
+  _custInScope().forEach(c=>{const pl=c['Product line']||'(khác)';const v=_actualVol(c);if(v>0)map[pl]=(map[pl]||0)+v;});
+  const labels=order.filter(k=>map[k]!=null).concat(Object.keys(map).filter(k=>!order.includes(k)));
+  const data=labels.map(k=>map[k]);
+  const total=data.reduce((s,v)=>s+v,0);
+  const colors=labels.map((k,i)=>_PL_COLORS[k]||_DONUT_COLORS[i%_DONUT_COLORS.length]);
+  prodDonutChart=_makeDonut('prodDonut',prodDonutChart,labels,data,colors,total);
+}
+
+// Vẽ tổng ở giữa donut (chỉ tác động chart có _centerText)
+const donutCenterPlugin={id:'donutCenter',afterDraw(chart){
+  const opt=chart.config.options.plugins; if(!opt||!opt._centerText)return;
+  const a=chart.chartArea; if(!a)return;
+  const cx=(a.left+a.right)/2, cy=(a.top+a.bottom)/2, ctx=chart.ctx, t=opt._centerText;
+  ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle='#1e293b';ctx.font='bold 17px Inter';ctx.fillText(t.value,cx,cy-6);
+  ctx.fillStyle='#64748b';ctx.font='10px Inter';ctx.fillText(t.label,cx,cy+13);
+  ctx.restore();
+}};
+Chart.register(donutCenterPlugin);
+
+function renderAll(){updateCards(currentAM);buildMainChart(currentAM);buildCumulChart(currentAM);buildTable(currentAM);buildForecastChart(currentAM);buildCustomerDonut();buildProductDonut();}
 
 const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
   const ctx=chart.ctx;
@@ -1432,7 +1518,7 @@ const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
         const v=dataset.data[idx];
         if(v==null||v===0)return;
         const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
-        ctx.save();ctx.font=isLine?'9px Inter':'bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-(isLine?6:4));ctx.restore();
+        ctx.save();ctx.font=isLine?'9px Inter':'bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#475569';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-(isLine?6:4));ctx.restore();
       });
     });
     const kpiDataset=chart.data.datasets.find(d=>d.label==='KPI');
@@ -1457,7 +1543,7 @@ const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
         const v=dataset.data[idx];
         if(v==null||v===0)return;
         const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
-        ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-4);ctx.restore();
+        ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#475569';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-4);ctx.restore();
       });
     });
     const kpiD=chart.data.datasets.find(d=>d.label==='KPI cả năm');
@@ -1483,7 +1569,7 @@ const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
         const v=dataset.data[idx];
         if(v==null||v===0)return;
         const label=v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString('vi-VN',{maximumFractionDigits:0});
-        ctx.save();ctx.font=isLine?'9px Inter':'bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-(isLine?6:4));ctx.restore();
+        ctx.save();ctx.font=isLine?'9px Inter':'bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#475569';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,el.x,el.y-(isLine?6:4));ctx.restore();
       });
     });
     return;
@@ -1494,7 +1580,7 @@ const datalabelsPlugin={id:'customDatalabels',afterDatasetsDraw(chart){
       meta.data.forEach((el,idx)=>{
         const v=dataset.data[idx];
         if(v==null||v===0)return;
-        ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#b0bcd4';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(v,el.x,el.y-4);ctx.restore();
+        ctx.save();ctx.font='bold 9px Inter';ctx.fillStyle=dataset.borderColor||'#475569';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(v,el.x,el.y-4);ctx.restore();
       });
     });
     return;
@@ -1570,16 +1656,16 @@ function buildActivityChart() {
       layout: { padding: { top: 24 } },
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { position: 'bottom', labels: { color: '#7c8db5', font: { size: 11 }, padding: 10, boxWidth: 10, boxHeight: 10 } },
+        legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 11 }, padding: 10, boxWidth: 10, boxHeight: 10 } },
         tooltip: {
-          backgroundColor: '#1e2336', borderColor: '#2a3050', borderWidth: 1,
-          titleColor: '#e8ecf4', bodyColor: '#7c8db5',
+          backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderWidth: 1,
+          titleColor: '#1e293b', bodyColor: '#64748b',
           callbacks: { label: c => `${c.dataset.label}: ${c.raw != null ? c.raw : '—'} lần` }
         }
       },
       scales: {
-        x: { ticks: { color: '#7c8db5', font: { size: 11 } }, grid: { color: 'rgba(42,48,80,.4)' } },
-        y: { ticks: { color: '#7c8db5', font: { size: 11 }, stepSize: 1 }, grid: { color: 'rgba(42,48,80,.4)' }, border: { dash: [4,4] }, min: 0 }
+        x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: 'rgba(100,116,139,.18)' } },
+        y: { ticks: { color: '#64748b', font: { size: 11 }, stepSize: 1 }, grid: { color: 'rgba(100,116,139,.18)' }, border: { dash: [4,4] }, min: 0 }
       }
     }
   });
@@ -1856,8 +1942,8 @@ function renderCustomerView() {
       {label:'Dự báo',data:fcArr,type:'line',borderColor:'#f7c948',backgroundColor:'rgba(247,201,72,.07)',borderWidth:2,borderDash:[4,3],pointRadius:3,tension:0.3,order:0}
     ]},
     options:{responsive:true,layout:{padding:{top:28}},interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2336',borderColor:'#2a3050',borderWidth:1,titleColor:'#e8ecf4',bodyColor:'#7c8db5',callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw,1):'—'} tấn`}}},
-      scales:{x:{ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'}},y:{grace:'8%',ticks:{color:'#7c8db5',font:{size:11}},grid:{color:'rgba(42,48,80,.4)'},border:{dash:[4,4]}}}}
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,titleColor:'#1e293b',bodyColor:'#64748b',callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?fmt(c.raw,1):'—'} tấn`}}},
+      scales:{x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(100,116,139,.18)'}},y:{grace:'8%',ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(100,116,139,.18)'},border:{dash:[4,4]}}}}
   });
 }
 
