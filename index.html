@@ -176,7 +176,7 @@
   <div class="chart-card">
     <div class="ct">KPI vs Thực hiện theo tháng</div>
     <div class="cs">Đơn vị: tấn · T1–T12/2026</div>
-    <canvas></canvas>
+    <canvas id="mainChart"></canvas>
     <div class="legend">
       <div class="li"><div class="ld" style="background:#fb6f84"></div>KPI tháng</div>
       <div class="li"><div class="ld" style="background:#36d399"></div>Thực hiện</div>
@@ -187,26 +187,26 @@
   <div class="chart-card">
     <div class="ct">Dự báo cuối năm vs KPI cả năm</div>
     <div class="cs" id="forecast-cs">Actual T1–T08 + FC T09–T12 so với KPI năm (tấn)</div>
-    <canvas></canvas>
+    <canvas id="forecastChart"></canvas>
   </div>
 </div>
 
 <div class="chart-card" style="margin-bottom:12px">
   <div class="ct">Lũy kế KPI vs Thực hiện</div>
   <div class="cs">Tích lũy từ đầu năm (tấn)</div>
-  <canvas></canvas>
+  <canvas id="cumulChart"></canvas>
 </div>
 
 <div class="charts-row" style="grid-template-columns:1fr 1fr">
   <div class="chart-card">
     <div class="ct">Sản lượng theo khách hàng</div>
     <div class="cs">Thực hiện (tấn) · lọc theo AM / Product line đang chọn</div>
-    <div style="height:300px;position:relative"><canvas></canvas></div>
+    <div style="height:300px;position:relative"><canvas id="custDonut"></canvas></div>
   </div>
   <div class="chart-card">
     <div class="ct">Sản lượng theo sản phẩm</div>
     <div class="cs">Thực hiện (tấn) · theo nhóm SP</div>
-    <div style="height:300px;position:relative"><canvas></canvas></div>
+    <div style="height:300px;position:relative"><canvas id="prodDonut"></canvas></div>
   </div>
 </div>
 
@@ -608,7 +608,7 @@
     <div class="cust-chart-card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">KPI · Thực hiện · PO · Dự báo theo tháng</div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Đơn vị: tấn · T01–T12/2026</div>
-      <canvas></canvas>
+      <canvas id="custChart"></canvas>
       <div class="legend" style="margin-top:10px">
         <div class="li"><div class="ld" style="background:#fb6f84"></div>KPI</div>
         <div class="li"><div class="ld" style="background:#36d399"></div>Thực hiện</div>
@@ -1698,7 +1698,7 @@ function downloadHTML() {
   // Bỏ kích thước canvas đã render (tránh lưu nhầm 0x0 khi tab đang ẩn)
   currentHTML = currentHTML.replace(/<canvas([^>]*)><\/canvas>/gi, (m, attrs) => {
     const idm = attrs.match(/id="[^"]*"/i);
-    return '<canvas></canvas>';
+    return '<canvas' + (idm ? ' ' + idm[0] : '') + '></canvas>';
   });
 
   // Download
@@ -1908,7 +1908,7 @@ function renderCustomerView() {
     <div class="cust-chart-card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">KPI · Thực hiện · PO · Dự báo theo tháng</div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Đơn vị: tấn · T01–T12/2026</div>
-      <canvas></canvas>
+      <canvas id="custChart"></canvas>
       <div class="legend" style="margin-top:10px">
         <div class="li"><div class="ld" style="background:#fb6f84"></div>KPI</div>
         <div class="li"><div class="ld" style="background:#36d399"></div>Thực hiện</div>
@@ -2095,7 +2095,7 @@ function handleExcelUpload(event) {
     </div>
   </div>
   <div class="cs">Số lần theo tháng · T1–T12/2026 · cập nhật trong mục ACTIVITY trong code</div>
-  <canvas></canvas>
+  <canvas id="activityChart"></canvas>
 </div>
 
 
